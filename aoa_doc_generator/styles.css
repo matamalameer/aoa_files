@@ -1,35 +1,37 @@
 /* ==========================================================================
-   1. SYSTEM VARIABLES & BASE STYLES
+   1. SYSTEM VARIABLES & VIBRANT HUSSEINIYA PALETTE
    ========================================================================== */
 :root {
-    --bg-app: #f4f5f7;
+    --bg-app: #f1f5f9;
     --bg-surface: #ffffff;
-    --bg-sidebar: #1e293b;
-    --bg-sidebar-hover: #334155;
-    --border-color: #e2e8f0;
+    --bg-sidebar: #0f172a;
+    --bg-sidebar-hover: #1e293b;
+    --border-color: #cbd5e1;
     --border-sidebar: #334155;
     
     --text-main: #0f172a;
-    --text-muted: #64748b;
+    --text-muted: #475569;
     --text-sidebar: #f8fafc;
     --text-sidebar-muted: #94a3b8;
     
-    --primary: #1e3a8a;
-    --primary-hover: #1d4ed8;
-    --accent: #d97706;
-    --success: #059669;
-    --danger: #dc2626;
+    /* Vibrant Islamic Burgundy & Emerald Palette */
+    --primary-burgundy: #800020;
+    --burgundy-gradient: linear-gradient(135deg, #800020 0%, #4a0013 100%);
+    --vibrant-gold: #c59b27;
+    --gold-light: #fef9c3;
+    --vibrant-green: #065f46;
     
     --font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
     --sidebar-width: 380px;
     --header-height: 60px;
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] {
-    --bg-app: #0f172a;
+    --bg-app: #090d16;
     --bg-surface: #1e293b;
     --border-color: #334155;
     --text-main: #f8fafc;
@@ -48,7 +50,7 @@ html, body {
 }
 
 /* ==========================================================================
-   2. SCREEN USER INTERFACE LAYOUT
+   2. UI EDITOR LAYOUT & CONTROLS
    ========================================================================== */
 .app-header {
     height: var(--header-height);
@@ -59,7 +61,7 @@ html, body {
 }
 
 .header-brand { display: flex; align-items: center; gap: 1rem; }
-.app-title { font-size: 1.125rem; font-weight: 700; color: var(--primary); }
+.app-title { font-size: 1.15rem; font-weight: 800; color: var(--primary-burgundy); }
 .header-actions { display: flex; align-items: center; gap: 0.75rem; }
 
 .search-box { position: relative; }
@@ -75,16 +77,17 @@ html, body {
 
 .btn-primary, .btn-secondary, .btn-outline, .btn-sm, .btn-icon {
     font-family: var(--font-family); display: inline-flex; align-items: center; justify-content: center;
-    gap: 0.5rem; border-radius: var(--radius-md); font-weight: 500; cursor: pointer;
+    gap: 0.5rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;
     transition: all 0.2s ease; border: none;
 }
 
-.btn-primary { background-color: var(--primary); color: #ffffff; padding: 0.5rem 1rem; font-size: 0.875rem; }
+.btn-primary { background: var(--burgundy-gradient); color: #ffffff; padding: 0.55rem 1.25rem; font-size: 0.875rem; box-shadow: 0 2px 8px rgba(128, 0, 32, 0.25); }
+.btn-primary:hover { opacity: 0.95; transform: translateY(-1px); }
 .btn-secondary, .btn-icon { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 0.5rem; }
-.btn-outline { background: transparent; border: 1px solid var(--border-sidebar); color: var(--text-sidebar); padding: 0.5rem 1rem; width: 100%; }
-.btn-outline.btn-success { border-color: var(--success); color: #34d399; }
-.btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; background-color: var(--primary); color: #fff; }
-.btn-danger-sm { background-color: var(--danger); color: #fff; border: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; cursor: pointer; margin-top: 0.5rem; }
+.btn-outline { background: transparent; border: 1px solid var(--border-sidebar); color: var(--text-sidebar); padding: 0.6rem 1rem; width: 100%; }
+.btn-outline.btn-success { border-color: #10b981; color: #34d399; }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; background-color: var(--primary-burgundy); color: #fff; }
+.btn-danger-sm { background-color: #dc2626; color: #fff; border: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; cursor: pointer; margin-top: 0.5rem; }
 
 .hidden { display: none !important; }
 
@@ -96,7 +99,7 @@ html, body {
 .sidebar-panel.collapsed { margin-right: calc(-1 * var(--sidebar-width)); }
 .sidebar-tabs { display: flex; border-bottom: 1px solid var(--border-sidebar); background-color: rgba(0, 0, 0, 0.2); }
 .tab-btn { flex: 1; padding: 0.75rem 0.5rem; background: transparent; border: none; color: var(--text-sidebar-muted); font-family: var(--font-family); font-size: 0.85rem; cursor: pointer; }
-.tab-btn.active { color: #ffffff; border-bottom: 2px solid var(--accent); background-color: var(--bg-sidebar); }
+.tab-btn.active { color: #ffffff; border-bottom: 3px solid var(--vibrant-gold); background-color: var(--bg-sidebar); font-weight: bold; }
 .sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
@@ -107,7 +110,7 @@ html, body {
 .form-group { margin-bottom: 1rem; }
 .form-group label { display: block; font-size: 0.8rem; color: var(--text-sidebar-muted); margin-bottom: 0.35rem; }
 .form-group input[type="text"], .form-group input[type="date"], .form-group textarea {
-    width: 100%; padding: 0.5rem; background-color: #0f172a; border: 1px solid var(--border-sidebar);
+    width: 100%; padding: 0.55rem; background-color: #020617; border: 1px solid var(--border-sidebar);
     border-radius: var(--radius-sm); color: #ffffff; font-family: var(--font-family); font-size: 0.875rem;
 }
 
@@ -117,94 +120,280 @@ html, body {
 
 .outline-tree { font-size: 0.875rem; }
 .outline-item { padding: 0.4rem 0.5rem; cursor: pointer; border-radius: var(--radius-sm); color: var(--text-sidebar-muted); display: block; text-decoration: none; }
-.outline-item.depth-1 { font-weight: 700; margin-top: 0.5rem; color: var(--text-sidebar); }
+.outline-item.depth-1 { font-weight: 700; margin-top: 0.5rem; color: #ffffff; }
 .outline-item.depth-2 { padding-right: 1.25rem; }
 
-.accordion-item { border: 1px solid var(--border-sidebar); border-radius: var(--radius-sm); margin-bottom: 0.75rem; background-color: rgba(0, 0, 0, 0.15); }
-.accordion-header { padding: 0.6rem; background-color: var(--bg-sidebar-hover); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+.accordion-item { border: 1px solid var(--border-sidebar); border-radius: var(--radius-sm); margin-bottom: 0.75rem; background-color: rgba(255, 255, 255, 0.03); }
+.accordion-header { padding: 0.6rem; background-color: var(--bg-sidebar-hover); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold; }
 .accordion-body { padding: 0.75rem; }
 
-.document-viewport { flex: 1; overflow-y: auto; padding: 2rem; background-color: var(--bg-app); display: flex; justify-content: center; }
-.a4-document { width: 210mm; min-height: 297mm; background-color: #ffffff !important; color: #0f172a !important; box-shadow: var(--shadow-lg); padding: 20mm 15mm; margin: 0 auto; box-sizing: border-box; }
+.document-viewport { flex: 1; overflow-y: auto; padding: 2.5rem; background-color: var(--bg-app); display: flex; justify-content: center; }
+.a4-document { width: 210mm; min-height: 297mm; background-color: #ffffff !important; color: #0f172a !important; box-shadow: var(--shadow-lg); padding: 20mm 15mm; margin: 0 auto; box-sizing: border-box; position: relative; }
 .a4-document * { color: #0f172a; }
 
-.modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15, 23, 42, 0.75); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1.5rem; }
+.modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15, 23, 42, 0.8); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1.5rem; }
 .modal-container { background-color: var(--bg-surface); width: 100%; max-width: 900px; height: 85vh; border-radius: var(--radius-md); display: flex; flex-direction: column; overflow: hidden; }
 .modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
 .modal-body { flex: 1; background-color: #f1f5f9; padding: 1rem; }
 .modal-body iframe { width: 100%; height: 100%; border: none; background: #fff; }
 .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem; }
 
-/* Document Elements */
-.page-cover { page: cover-page; break-after: page; min-height: 250mm; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
-.cover-header { display: flex; justify-content: center; padding-top: 2rem; }
-.brand-logo { max-width: 140px; max-height: 140px; object-fit: contain; }
-.cover-org-name { font-size: 1.75rem; color: #475569 !important; margin-bottom: 1rem; }
-.cover-divider { width: 80px; height: 4px; background-color: #1e3a8a; margin: 0 auto 1.5rem auto; }
-.cover-title { font-size: 2.25rem; font-weight: 800; color: #1e3a8a !important; line-height: 1.3; }
-.cover-footer { display: flex; justify-content: space-between; border-top: 2px solid #e2e8f0; padding-top: 1rem; font-size: 0.9rem; color: #64748b !important; }
-
-.page-toc { page: content-page; break-before: page; break-after: page; margin-top: 2rem; padding-bottom: 2rem; }
-.section-toc-title { font-size: 1.5rem; color: #1e3a8a !important; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
-.toc-list { display: flex; flex-direction: column; gap: 0.75rem; }
-.toc-item { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.95rem; text-decoration: none; color: #0f172a !important; }
-.toc-dots { flex: 1; border-bottom: 1px dotted #64748b; margin: 0 0.5rem; }
-
-.section-cover-page { page: section-cover; break-before: page; break-after: page; text-align: center; padding: 6rem 0; }
-.section-cover-page h2 { font-size: 2.25rem; color: #1e3a8a !important; margin-bottom: 0.5rem; }
-.section-content-wrapper { page: content-page; break-before: page; padding: 2rem 0; }
-
-.article-node { margin-top: 1.5rem; margin-bottom: 1.5rem; break-inside: avoid; }
-.article-title { font-size: 1.15rem; color: #1e3a8a !important; font-weight: 700; margin-bottom: 0.5rem; }
-.article-content { font-size: 1rem; line-height: 1.7; color: #0f172a !important; text-align: justify; }
 
 /* ==========================================================================
-   3. PAGED.JS CSS PAGED MEDIA SPECIFICATIONS (Page X of Y & Headers)
+   3. A4 PRINT & DISPLAY DOCUMENT LAYOUT (REDESIGNED)
+   ========================================================================== */
+
+/* 3.1 Cover Page Layout */
+.page-cover {
+    page: cover-page;
+    break-after: page;
+    min-height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 10mm 0;
+}
+
+.cover-center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: auto 0;
+}
+
+.brand-logo-wrapper {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand-logo {
+    max-width: 220px;
+    max-height: 220px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+}
+
+.cover-org-name {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: var(--primary-burgundy) !important;
+    margin-bottom: 1.25rem;
+    line-height: 1.3;
+}
+
+.cover-accent-badge {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, rgba(128,0,32,0.06) 0%, rgba(197,155,39,0.12) 100%);
+    border-right: 4px solid var(--primary-burgundy);
+    border-left: 4px solid var(--vibrant-gold);
+    border-radius: var(--radius-sm);
+}
+
+.cover-accent-badge span {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-burgundy) !important;
+}
+
+/* Elegant Cover Card Footer */
+.cover-footer-card {
+    width: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #fdfbf7;
+    border: 1px solid rgba(197, 155, 39, 0.3);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.04);
+}
+
+.card-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.card-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888888 !important;
+}
+
+.card-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary-burgundy) !important;
+}
+
+.card-divider {
+    width: 1px;
+    height: 32px;
+    background-color: rgba(197, 155, 39, 0.3);
+}
+
+
+/* 3.2 Table of Contents */
+.page-toc {
+    page: content-page;
+    break-before: page;
+    break-after: page;
+    margin-top: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+.section-toc-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-burgundy) !important;
+    border-bottom: 3px solid var(--vibrant-gold);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.75rem;
+    text-align: center;
+}
+
+.toc-list { display: flex; flex-direction: column; gap: 0.85rem; }
+.toc-item { display: flex; justify-content: space-between; align-items: baseline; font-size: 1rem; text-decoration: none; color: #0f172a !important; font-weight: 500; }
+.toc-dots { flex: 1; border-bottom: 1px dotted #94a3b8; margin: 0 0.75rem; }
+
+
+/* 3.3 Vibrant Section Cover Pages */
+.section-cover-page {
+    page: section-cover;
+    break-before: page;
+    break-after: page;
+    min-height: 230mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.vibrant-section-card {
+    width: 90%;
+    padding: 3.5rem 2rem;
+    background: linear-gradient(135deg, rgba(128, 0, 32, 0.04) 0%, rgba(197, 155, 39, 0.08) 100%);
+    border: 2px solid var(--vibrant-gold);
+    border-radius: var(--radius-lg);
+    position: relative;
+    box-shadow: 0 10px 30px rgba(128, 0, 32, 0.05);
+}
+
+.vibrant-section-card h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--primary-burgundy) !important;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.section-card-line {
+    width: 60px;
+    height: 4px;
+    background: var(--vibrant-gold);
+    margin: 1.25rem auto 0 auto;
+    border-radius: 2px;
+}
+
+
+/* 3.4 Vibrant Content Articles */
+.section-content-wrapper {
+    page: content-page;
+    break-before: page;
+    padding: 1.5rem 0;
+}
+
+.article-node {
+    margin-top: 1.5rem;
+    margin-bottom: 1.75rem;
+    break-inside: avoid;
+}
+
+.article-title-vibrant {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary-burgundy) !important;
+    background-color: #fdfbf7;
+    border-right: 5px solid var(--vibrant-gold);
+    padding: 0.5rem 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 0.75rem;
+}
+
+.article-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #1e293b !important;
+    text-align: justify;
+    padding: 0 0.5rem;
+}
+
+
+/* ==========================================================================
+   4. PAGED.JS MEDIA MARGINS & HEADERS/FOOTERS
    ========================================================================== */
 
 @page {
     size: A4 portrait;
-    margin: 20mm 15mm 20mm 15mm;
+    margin: 28mm 15mm 22mm 15mm;
     font-family: 'Tajawal', sans-serif;
 
+    /* Centered Vibrant Header */
+    @top-center {
+        content: element(headerContent);
+        width: 100%;
+    }
+
+    /* Footer: Page numbers on left, Ma'tam Name & Version on right */
     @bottom-left {
         content: "صفحة " counter(page) " من " counter(pages);
         font-family: 'Tajawal', sans-serif;
-        font-size: 8pt;
+        font-size: 8.5pt;
+        font-weight: 600;
         color: #64748b;
     }
 
     @bottom-right {
-        content: "شركة التقنية المتقدمة ذ.م.م";
+        content: string(docVersionStr) " — " string(orgNameStr);
         font-family: 'Tajawal', sans-serif;
-        font-size: 8pt;
-        color: #64748b;
-    }
-
-    @top-right {
-        content: "عقد تأسيس الشركة";
-        font-family: 'Tajawal', sans-serif;
-        font-size: 8pt;
-        color: #94a3b8;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 3px;
+        font-size: 8.5pt;
+        font-weight: 600;
+        color: #800020;
     }
 }
 
+/* Page Setup Overrides for Covers */
 @page cover-page {
-    margin: 0;
-    @top-right { content: none; border: none; }
+    margin: 15mm;
+    @top-center { content: none; }
     @bottom-left { content: none; }
     @bottom-right { content: none; }
 }
 
 @page section-cover {
-    @top-right { content: none; border: none; }
+    margin: 15mm;
+    @top-center { content: none; }
     @bottom-left { content: none; }
     @bottom-right { content: none; }
 }
 
-/* Print Overrides */
+/* Paged.js String Targets */
+.page-cover {
+    string-set: orgNameStr attr(data-org), docVersionStr attr(data-version);
+}
+
+/* Screen Mode & Print Fallbacks */
 @media print {
     .no-print, .app-header, .sidebar-panel, .modal-backdrop { 
         display: none !important; 
