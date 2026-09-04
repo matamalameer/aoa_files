@@ -1,0 +1,233 @@
+/* ==========================================================================
+   1. SYSTEM VARIABLES & BASE STYLES
+   ========================================================================== */
+:root {
+    --bg-app: #f4f5f7;
+    --bg-surface: #ffffff;
+    --bg-sidebar: #1e293b;
+    --bg-sidebar-hover: #334155;
+    --border-color: #e2e8f0;
+    --border-sidebar: #334155;
+    
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-sidebar: #f8fafc;
+    --text-sidebar-muted: #94a3b8;
+    
+    --primary: #1e3a8a;
+    --primary-hover: #1d4ed8;
+    --accent: #d97706;
+    --success: #059669;
+    --danger: #dc2626;
+    
+    --font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sidebar-width: 380px;
+    --header-height: 60px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-app: #0f172a;
+    --bg-surface: #1e293b;
+    --border-color: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    direction: rtl;
+    text-align: right;
+}
+
+/* ==========================================================================
+   2. SCREEN USER INTERFACE LAYOUT
+   ========================================================================== */
+.app-header {
+    height: var(--header-height);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+}
+
+.header-brand { display: flex; align-items: center; gap: 1rem; }
+.app-title { font-size: 1.125rem; font-weight: 700; color: var(--primary); }
+.header-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+.search-box { position: relative; }
+.search-box input {
+    font-family: var(--font-family); padding: 0.5rem 2.25rem 0.5rem 0.75rem;
+    border: 1px solid var(--border-color); border-radius: var(--radius-md);
+    background-color: var(--bg-app); color: var(--text-main); font-size: 0.875rem; width: 220px;
+}
+.search-box .search-icon {
+    position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); pointer-events: none;
+}
+
+.btn-primary, .btn-secondary, .btn-outline, .btn-sm, .btn-icon {
+    font-family: var(--font-family); display: inline-flex; align-items: center; justify-content: center;
+    gap: 0.5rem; border-radius: var(--radius-md); font-weight: 500; cursor: pointer;
+    transition: all 0.2s ease; border: none;
+}
+
+.btn-primary { background-color: var(--primary); color: #ffffff; padding: 0.5rem 1rem; font-size: 0.875rem; }
+.btn-secondary, .btn-icon { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 0.5rem; }
+.btn-outline { background: transparent; border: 1px solid var(--border-sidebar); color: var(--text-sidebar); padding: 0.5rem 1rem; width: 100%; }
+.btn-outline.btn-success { border-color: var(--success); color: #34d399; }
+.btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; background-color: var(--primary); color: #fff; }
+.btn-danger-sm { background-color: var(--danger); color: #fff; border: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; cursor: pointer; margin-top: 0.5rem; }
+
+.hidden { display: none !important; }
+
+.app-layout { display: flex; height: calc(100vh - var(--header-height)); margin-top: var(--header-height); overflow: hidden; }
+.sidebar-panel {
+    width: var(--sidebar-width); background-color: var(--bg-sidebar); color: var(--text-sidebar);
+    display: flex; flex-direction: column; border-left: 1px solid var(--border-sidebar); transition: margin-right 0.3s ease;
+}
+.sidebar-panel.collapsed { margin-right: calc(-1 * var(--sidebar-width)); }
+.sidebar-tabs { display: flex; border-bottom: 1px solid var(--border-sidebar); background-color: rgba(0, 0, 0, 0.2); }
+.tab-btn { flex: 1; padding: 0.75rem 0.5rem; background: transparent; border: none; color: var(--text-sidebar-muted); font-family: var(--font-family); font-size: 0.85rem; cursor: pointer; }
+.tab-btn.active { color: #ffffff; border-bottom: 2px solid var(--accent); background-color: var(--bg-sidebar); }
+.sidebar-content { flex: 1; overflow-y: auto; padding: 1.25rem; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.tab-pane h3 { font-size: 1rem; margin-bottom: 1rem; color: #ffffff; border-bottom: 1px solid var(--border-sidebar); padding-bottom: 0.5rem; }
+.pane-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.pane-header h3 { margin-bottom: 0; border: none; padding: 0; }
+
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.8rem; color: var(--text-sidebar-muted); margin-bottom: 0.35rem; }
+.form-group input[type="text"], .form-group input[type="date"], .form-group textarea {
+    width: 100%; padding: 0.5rem; background-color: #0f172a; border: 1px solid var(--border-sidebar);
+    border-radius: var(--radius-sm); color: #ffffff; font-family: var(--font-family); font-size: 0.875rem;
+}
+
+.io-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+.custom-file-upload { text-align: center; cursor: pointer; }
+#importJsonInput { display: none; }
+
+.outline-tree { font-size: 0.875rem; }
+.outline-item { padding: 0.4rem 0.5rem; cursor: pointer; border-radius: var(--radius-sm); color: var(--text-sidebar-muted); display: block; text-decoration: none; }
+.outline-item.depth-1 { font-weight: 700; margin-top: 0.5rem; color: var(--text-sidebar); }
+.outline-item.depth-2 { padding-right: 1.25rem; }
+
+.accordion-item { border: 1px solid var(--border-sidebar); border-radius: var(--radius-sm); margin-bottom: 0.75rem; background-color: rgba(0, 0, 0, 0.15); }
+.accordion-header { padding: 0.6rem; background-color: var(--bg-sidebar-hover); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+.accordion-body { padding: 0.75rem; }
+
+.document-viewport { flex: 1; overflow-y: auto; padding: 2rem; background-color: var(--bg-app); display: flex; justify-content: center; }
+.a4-document { width: 210mm; min-height: 297mm; background-color: #ffffff !important; color: #0f172a !important; box-shadow: var(--shadow-lg); padding: 20mm 15mm; margin: 0 auto; box-sizing: border-box; }
+.a4-document * { color: #0f172a; }
+
+.modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15, 23, 42, 0.75); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1.5rem; }
+.modal-container { background-color: var(--bg-surface); width: 100%; max-width: 900px; height: 85vh; border-radius: var(--radius-md); display: flex; flex-direction: column; overflow: hidden; }
+.modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+.modal-body { flex: 1; background-color: #f1f5f9; padding: 1rem; }
+.modal-body iframe { width: 100%; height: 100%; border: none; background: #fff; }
+.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem; }
+
+/* Document Elements */
+.page-cover { page: cover-page; break-after: page; min-height: 250mm; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
+.cover-header { display: flex; justify-content: center; padding-top: 2rem; }
+.brand-logo { max-width: 140px; max-height: 140px; object-fit: contain; }
+.cover-org-name { font-size: 1.75rem; color: #475569 !important; margin-bottom: 1rem; }
+.cover-divider { width: 80px; height: 4px; background-color: #1e3a8a; margin: 0 auto 1.5rem auto; }
+.cover-title { font-size: 2.25rem; font-weight: 800; color: #1e3a8a !important; line-height: 1.3; }
+.cover-footer { display: flex; justify-content: space-between; border-top: 2px solid #e2e8f0; padding-top: 1rem; font-size: 0.9rem; color: #64748b !important; }
+
+.page-toc { page: content-page; break-before: page; break-after: page; margin-top: 2rem; padding-bottom: 2rem; }
+.section-toc-title { font-size: 1.5rem; color: #1e3a8a !important; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+.toc-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.toc-item { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.95rem; text-decoration: none; color: #0f172a !important; }
+.toc-dots { flex: 1; border-bottom: 1px dotted #64748b; margin: 0 0.5rem; }
+
+.section-cover-page { page: section-cover; break-before: page; break-after: page; text-align: center; padding: 6rem 0; }
+.section-cover-page h2 { font-size: 2.25rem; color: #1e3a8a !important; margin-bottom: 0.5rem; }
+.section-content-wrapper { page: content-page; break-before: page; padding: 2rem 0; }
+
+.article-node { margin-top: 1.5rem; margin-bottom: 1.5rem; break-inside: avoid; }
+.article-title { font-size: 1.15rem; color: #1e3a8a !important; font-weight: 700; margin-bottom: 0.5rem; }
+.article-content { font-size: 1rem; line-height: 1.7; color: #0f172a !important; text-align: justify; }
+
+/* ==========================================================================
+   3. PAGED.JS CSS PAGED MEDIA SPECIFICATIONS (Page X of Y & Headers)
+   ========================================================================== */
+
+@page {
+    size: A4 portrait;
+    margin: 20mm 15mm 20mm 15mm;
+    font-family: 'Tajawal', sans-serif;
+
+    @bottom-left {
+        content: "صفحة " counter(page) " من " counter(pages);
+        font-family: 'Tajawal', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+    }
+
+    @bottom-right {
+        content: "شركة التقنية المتقدمة ذ.م.م";
+        font-family: 'Tajawal', sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+    }
+
+    @top-right {
+        content: "عقد تأسيس الشركة";
+        font-family: 'Tajawal', sans-serif;
+        font-size: 8pt;
+        color: #94a3b8;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 3px;
+    }
+}
+
+@page cover-page {
+    margin: 0;
+    @top-right { content: none; border: none; }
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+}
+
+@page section-cover {
+    @top-right { content: none; border: none; }
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+}
+
+/* Print Overrides */
+@media print {
+    .no-print, .app-header, .sidebar-panel, .modal-backdrop { 
+        display: none !important; 
+    }
+
+    html, body { 
+        background: #ffffff !important; 
+        color: #000000 !important; 
+        width: 100%; 
+        height: auto; 
+    }
+
+    .app-layout, .document-viewport { 
+        display: block; 
+        margin: 0; 
+        padding: 0; 
+        height: auto; 
+    }
+
+    .a4-document { 
+        width: 100%; 
+        box-shadow: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+}
