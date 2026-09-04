@@ -1,0 +1,249 @@
+/* document.css - A4 Print Layout, Document Preview Viewport & CSS Leaders */
+
+.document-viewport {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--bg-dark-900);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.viewport-controls {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  background-color: var(--bg-dark-800);
+  border: 1px solid var(--border-color);
+  padding: 0.4rem 0.6rem;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-icon-sm {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon-sm:hover {
+  background-color: var(--bg-dark-700);
+}
+
+/* A4 Page Paper Dimensions */
+.a4-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  transition: transform 0.2s ease-out;
+  transform-origin: top center;
+}
+
+.doc-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 25mm 20mm;
+  background-color: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  position: relative;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  direction: rtl;
+}
+
+/* Cover Page Formatting */
+.doc-cover-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.doc-cover-header {
+  margin-top: 3rem;
+}
+
+.doc-cover-logo {
+  max-width: 130px;
+  max-height: 130px;
+  margin-bottom: 1.5rem;
+}
+
+.doc-cover-logo-placeholder {
+  font-size: 5rem;
+  color: #d97706;
+  margin-bottom: 1.5rem;
+}
+
+.doc-org-name {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.doc-cover-body {
+  margin: auto 0;
+}
+
+.doc-main-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #0369a1;
+  margin-bottom: 1rem;
+}
+
+.doc-title-divider {
+  width: 100px;
+  height: 4px;
+  background-color: #d97706;
+  margin: 0 auto 1.5rem auto;
+  border-radius: 2px;
+}
+
+.doc-subtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+}
+
+.doc-cover-footer {
+  border-top: 2px solid #e2e8f0;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.95rem;
+}
+
+.meta-label {
+  color: #64748b;
+  margin-left: 0.4rem;
+}
+
+.meta-value {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Table of Contents (TOC) Leaders */
+.toc-heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  border-bottom: 2px solid #0369a1;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.toc-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.toc-section-item, .toc-article-item {
+  display: flex;
+  align-items: baseline;
+}
+
+.toc-section-item {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #0f172a;
+  margin-top: 0.5rem;
+}
+
+.toc-article-item {
+  font-size: 0.95rem;
+  color: #334155;
+  padding-right: 1rem;
+}
+
+.toc-title {
+  white-space: nowrap;
+}
+
+.toc-dots {
+  flex: 1;
+  border-bottom: 2px dotted #cbd5e1;
+  margin: 0 0.5rem;
+}
+
+/* Legal Body Sections & Articles */
+.doc-section {
+  margin-bottom: 2rem;
+}
+
+.doc-chapter-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0369a1;
+  background-color: #f1f5f9;
+  padding: 0.6rem 1rem;
+  border-right: 4px solid #d97706;
+  margin-bottom: 1.25rem;
+}
+
+.doc-article {
+  margin-bottom: 1.5rem;
+}
+
+.doc-article-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.doc-article-body {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #334155;
+  text-align: justify;
+}
+
+/* Print Optimization Media Rules */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .sidebar, .viewport-controls {
+    display: none !important;
+  }
+
+  .document-viewport {
+    padding: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+
+  .a4-page-container {
+    gap: 0 !important;
+    transform: none !important;
+  }
+
+  .doc-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    page-break-after: always;
+  }
+}

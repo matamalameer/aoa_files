@@ -1,0 +1,79 @@
+/* editor.css - Dark Theme overrides for Quill.js and Active Editor Containers */
+
+.sidebar-editors-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.active-item-badge {
+  font-size: 0.85rem;
+  color: var(--accent-gold);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  background-color: rgba(217, 119, 6, 0.1);
+  border-right: 3px solid var(--accent-gold);
+  border-radius: 2px;
+}
+
+/* Quill Dark Theme Overrides */
+.ql-toolbar.ql-snow {
+  background-color: var(--bg-dark-900) !important;
+  border-color: var(--border-color) !important;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  direction: rtl;
+  text-align: right;
+}
+
+.ql-container.ql-snow {
+  background-color: var(--bg-dark-900) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-family) !important;
+  font-size: 0.9rem !important;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  min-height: 180px;
+}
+
+/* Format Icons and Picker Colors */
+.ql-snow .ql-stroke {
+  stroke: var(--text-muted) !important;
+}
+
+.ql-snow .ql-fill {
+  fill: var(--text-muted) !important;
+}
+
+.ql-snow .ql-picker {
+  color: var(--text-muted) !important;
+}
+
+.ql-snow .ql-picker-options {
+  background-color: var(--bg-dark-800) !important;
+  border-color: var(--border-color) !important;
+}
+
+.ql-snow .ql-active .ql-stroke {
+  stroke: var(--primary-500) !important;
+}
+
+.ql-snow .ql-active .ql-fill {
+  fill: var(--primary-500) !important;
+}
+
+/* Ensure Text Direction inside Editor is RTL Right-Aligned */
+.ql-editor {
+  direction: rtl;
+  text-align: right;
+  line-height: 1.7;
+}
+
+.ql-editor.ql-blank::before {
+  color: var(--text-muted) !important;
+  font-style: normal;
+  right: 15px;
+  left: auto;
+}
