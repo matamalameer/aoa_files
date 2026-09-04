@@ -43,8 +43,8 @@ class RenderEngine {
   }
 
   generateCoverHTML(metadata) {
-    const logoHTML = metadata.logoUrl
-      ? `<img src="${this.escapeHtml(metadata.logoUrl)}" alt="Logo" class="doc-cover-logo" />`
+    const logoHTML = metadata.logoDataUri
+      ? `<img src="${this.escapeHtml(metadata.logoDataUri)}" alt="Logo" class="doc-cover-logo" />`
       : `<div class="doc-cover-logo-placeholder"><i class="fa-solid fa-building-columns"></i></div>`;
 
     return `
@@ -63,11 +63,11 @@ class RenderEngine {
         <div class="doc-cover-footer">
           <div>
             <span class="meta-label">تاريخ الإصدار:</span>
-            <span class="meta-value">${this.escapeHtml(metadata.issueDate || '-')}</span>
+            <span class="meta-value">${this.escapeHtml(metadata.approvalDate || '-')}</span>
           </div>
           <div>
             <span class="meta-label">رقم الإصدار:</span>
-            <span class="meta-value">${this.escapeHtml(metadata.version || '1.0')}</span>
+            <span class="meta-value">${this.escapeHtml(metadata.docVersion || '1.0')}</span>
           </div>
         </div>
       </section>
@@ -134,7 +134,7 @@ class RenderEngine {
    * ----------------------------------------------------------------- */
 
   renderOutlineTree(state) {
-    const container = document.getElementById('outline-tree');
+    const container = document.getElementById('outline-tree-container');
     if (!container) return;
 
     const sections = state.sections || [];
@@ -183,15 +183,13 @@ class RenderEngine {
 
     const orgInput = document.getElementById('input-org-name');
     const titleInput = document.getElementById('input-doc-title');
-    const subtitleInput = document.getElementById('input-doc-subtitle');
-    const dateInput = document.getElementById('input-issue-date');
-    const versionInput = document.getElementById('input-version');
+    const dateInput = document.getElementById('input-doc-date');
+    const versionInput = document.getElementById('input-doc-version');
 
     if (orgInput && document.activeElement !== orgInput) orgInput.value = meta.orgName || '';
     if (titleInput && document.activeElement !== titleInput) titleInput.value = meta.docTitle || '';
-    if (subtitleInput && document.activeElement !== subtitleInput) subtitleInput.value = meta.docSubtitle || '';
-    if (dateInput && document.activeElement !== dateInput) dateInput.value = meta.issueDate || '';
-    if (versionInput && document.activeElement !== versionInput) versionInput.value = meta.version || '';
+    if (dateInput && document.activeElement !== dateInput) dateInput.value = meta.approvalDate || '';
+    if (versionInput && document.activeElement !== versionInput) versionInput.value = meta.docVersion || '';
   }
 
   escapeHtml(str) {

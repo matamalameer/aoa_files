@@ -100,10 +100,21 @@ class StateManager {
    * METADATA ACTIONS
    * ----------------------------------------------------------------- */
 
-  updateMetadata(key, value) {
-    if (key in this.state.metadata) {
-      this.state.metadata[key] = value;
-      this.notify('METADATA_UPDATED', { key, value });
+  updateMetadata(keyOrObject, value) {
+    const updates = typeof keyOrObject === 'object' && keyOrObject !== null
+      ? keyOrObject
+      : { [keyOrObject]: value };
+
+    const changedKeys = [];
+    Object.entries(updates).forEach(([key, nextValue]) => {
+      if (key in this.state.metadata) {
+        this.state.metadata[key] = nextValue;
+        changedKeys.push(key);
+      }
+    });
+
+    if (changedKeys.length) {
+      this.notify('METADATA_UPDATED', { changes: updates });
     }
   }
 
@@ -133,6 +144,28 @@ class StateManager {
       section.title = title;
       this.notify('SECTION_UPDATED', { sectionId, title });
     }
+  }
+
+  updateSection(sectionId, title) {
+    const section = this.getSectionById(sectionId);
+    if (section && title && title.trim()) {
+      section.title = title.trim();
+      this.notify('SECTION_UPDATED', { sectionId, title: section.title });
+    }
+  }
+
+  reorderSection(sectionId, direction) {
+    const index = this.state.sections.findIndex(section => section.id === sectionId);
+    if (index === -1) return;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= this.state.sections.length) return;
+
+    [this.state.sections[index], this.state.sections[targetIndex]] = [
+      this.state.sections[targetIndex],
+      this.state.sections[index]
+    ];
+    this.notify('SECTION_REORDERED', { sectionId, direction });
   }
 
   deleteSection(sectionId) {
@@ -179,6 +212,36 @@ class StateManager {
       article.title = title;
       this.notify('ARTICLE_TITLE_UPDATED', { articleId, title });
     }
+  }
+
+  updateArticle(sectionId, articleId, title, content) {
+    const section = this.getSectionById(sectionId);
+    if (!section) return;
+
+    const article = section.articles.find(item => item.id === articleId);
+    if (!article) return;
+
+    if (title && title.trim()) article.title = title.trim();
+    if (typeof content === 'string') article.content = content;
+    this.notify('ARTICLE_UPDATED', { sectionId, articleId, title: article.title, content: article.content });
+  }
+
+  reorderArticle(sectionId, articleId, direction) {
+    const section = this.getSectionById(sectionId);
+    if (!section) return;
+
+    const index = section.articles.findIndex(article => article.id === articleId);
+    if (index === -1) return;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= section.articles.length) return;
+
+    [section.articles[index], section.articles[targetIndex]] = [
+      section.articles[targetIndex],
+      section.articles[index]
+    ];
+    this.recalculateArticleNumbers();
+    this.notify('ARTICLE_REORDERED', { sectionId, articleId, direction });
   }
 
   deleteArticle(articleId) {

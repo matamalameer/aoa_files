@@ -40,9 +40,8 @@ class UIManager {
   bindMetadataInputs() {
     const orgInput = document.getElementById('input-org-name');
     const titleInput = document.getElementById('input-doc-title');
-    const subtitleInput = document.getElementById('input-doc-subtitle');
-    const dateInput = document.getElementById('input-issue-date');
-    const versionInput = document.getElementById('input-version');
+    const dateInput = document.getElementById('input-doc-date');
+    const versionInput = document.getElementById('input-doc-version');
 
     if (orgInput) {
       orgInput.addEventListener('input', (e) => stateManager.updateMetadata({ orgName: e.target.value }));
@@ -50,14 +49,11 @@ class UIManager {
     if (titleInput) {
       titleInput.addEventListener('input', (e) => stateManager.updateMetadata({ docTitle: e.target.value }));
     }
-    if (subtitleInput) {
-      subtitleInput.addEventListener('input', (e) => stateManager.updateMetadata({ docSubtitle: e.target.value }));
-    }
     if (dateInput) {
-      dateInput.addEventListener('change', (e) => stateManager.updateMetadata({ issueDate: e.target.value }));
+      dateInput.addEventListener('change', (e) => stateManager.updateMetadata({ approvalDate: e.target.value }));
     }
     if (versionInput) {
-      versionInput.addEventListener('input', (e) => stateManager.updateMetadata({ version: e.target.value }));
+      versionInput.addEventListener('input', (e) => stateManager.updateMetadata({ docVersion: e.target.value }));
     }
   }
 
@@ -69,7 +65,7 @@ class UIManager {
    * Delegates tree outline actions (add, edit, delete, move up/down).
    */
   bindOutlineEvents() {
-    const treeContainer = document.getElementById('outline-tree');
+    const treeContainer = document.getElementById('outline-tree-container');
     if (!treeContainer) return;
 
     treeContainer.addEventListener('click', (e) => {
@@ -77,10 +73,16 @@ class UIManager {
       if (!target) return;
 
       const action = target.dataset.action;
-      const sectionId = target.dataset.sectionId;
-      const articleId = target.dataset.articleId;
+      const sectionId = target.dataset.secId || target.dataset.sectionId;
+      const articleId = target.dataset.artId || target.dataset.articleId;
 
-      switch (action) {
+      const normalizedAction = action === 'move-art-up' ? 'move-article-up'
+        : action === 'move-art-down' ? 'move-article-down'
+        : action === 'move-sec-up' ? 'move-section-up'
+        : action === 'move-sec-down' ? 'move-section-down'
+        : action;
+
+      switch (normalizedAction) {
         case 'add-section':
           this.openSectionModal();
           break;
@@ -88,14 +90,17 @@ class UIManager {
           this.openSectionModal(sectionId);
           break;
         case 'delete-section':
+        case 'delete-sec':
           if (confirm('هل أنت تأكد من حذف هذا الفصل بجميع مواده؟')) {
             stateManager.deleteSection(sectionId);
           }
           break;
         case 'move-section-up':
+        case 'move-sec-up':
           stateManager.reorderSection(sectionId, 'up');
           break;
         case 'move-section-down':
+        case 'move-sec-down':
           stateManager.reorderSection(sectionId, 'down');
           break;
         case 'add-article':
@@ -106,20 +111,23 @@ class UIManager {
           break;
         case 'delete-article':
           if (confirm('هل أنت تأكد من حذف هذه المادة؟')) {
-            stateManager.deleteArticle(sectionId, articleId);
+            stateManager.deleteArticle(articleId);
           }
           break;
         case 'move-article-up':
+        case 'move-art-up':
           stateManager.reorderArticle(sectionId, articleId, 'up');
           break;
         case 'move-article-down':
+        case 'move-art-down':
           stateManager.reorderArticle(sectionId, articleId, 'down');
+          break;
+        case 'transfer-article':
           break;
       }
     });
 
-    // Add Section button at bottom of panel
-    const addSectionBtn = document.getElementById('btn-add-section-root');
+    const addSectionBtn = document.getElementById('btn-add-section');
     if (addSectionBtn) {
       addSectionBtn.addEventListener('click', () => this.openSectionModal());
     }
@@ -145,7 +153,7 @@ class UIManager {
 
         const reader = new FileReader();
         reader.onload = (event) => {
-          stateManager.updateMetadata({ logoUrl: event.target.result });
+          stateManager.updateMetadata({ logoDataUri: event.target.result });
         };
         reader.readAsDataURL(file);
       });
@@ -153,7 +161,7 @@ class UIManager {
 
     if (removeLogoBtn) {
       removeLogoBtn.addEventListener('click', () => {
-        stateManager.updateMetadata({ logoUrl: null });
+        stateManager.updateMetadata({ logoDataUri: null });
         if (logoInput) logoInput.value = '';
       });
     }
@@ -166,12 +174,12 @@ class UIManager {
   bindZoomControls() {
     const btnZoomIn = document.getElementById('btn-zoom-in');
     const btnZoomOut = document.getElementById('btn-zoom-out');
-    const btnZoomReset = document.getElementById('btn-zoom-reset');
+    const btnZoomReset = document.getElementById('btn-reset-zoom');
     const zoomLabel = document.getElementById('zoom-level-label');
 
     const updateZoom = (newZoom) => {
       this.currentZoom = Math.min(Math.max(newZoom, 50), 150);
-      const viewport = document.getElementById('a4-paper-wrapper');
+      const viewport = document.getElementById('a4-paper');
       if (viewport) {
         viewport.style.transform = `scale(${this.currentZoom / 100})`;
         viewport.style.transformOrigin = 'top center';
@@ -191,7 +199,7 @@ class UIManager {
    * ----------------------------------------------------------------- */
 
   bindActionButtons() {
-    const btnPrint = document.getElementById('btn-print');
+    const btnPrint = document.getElementById('btn-print-doc');
     if (btnPrint) {
       btnPrint.addEventListener('click', () => exportManager.printDocument());
     }
