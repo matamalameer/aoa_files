@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const DEFAULT_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgwMDAyMCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik0xMiAyTDQgN3Y2YzAgNS41NSAzLzg0IDEwLjc0IDggMTIgNC4xNi0xLjI2IDgtNS40NSA4LTEyVjdsLTgtNXoiLz48cGF0aCBkPSJNMTIgNnY2TDE1IDE1IiBzdHJva2U9IiNjNTliMjciIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     let docState = {
@@ -42,12 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let compiledHtmlCache = "";
+    let searchTerm = "";
 
     const elements = {
         sidebar: document.getElementById('sidebar'),
         sidebarToggle: document.getElementById('sidebarToggle'),
         themeToggle: document.getElementById('themeToggle'),
         printBtn: document.getElementById('printBtn'),
+        globalSearch: document.getElementById('globalSearch'),
         
         tabBtns: document.querySelectorAll('.tab-btn'),
         tabPanes: document.querySelectorAll('.tab-pane'),
@@ -98,6 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.inputDocDate) elements.inputDocDate.value = docState.metadata.date;
     }
 
+    function formatTextWithBreaks(text) {
+        if (!text) return '';
+        // Safe string splitting to avoid regex SyntaxError in string templates
+        return text.split('\n').join('<br>');
+    }
+
     function renderDocumentView() {
         if (elements.renderOrgName) elements.renderOrgName.textContent = docState.metadata.orgName;
         if (elements.renderDocTitle) elements.renderDocTitle.textContent = docState.metadata.title;
@@ -138,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!art.title) return;
                 const subTocItem = document.createElement('a');
                 subTocItem.className = 'toc-item';
-                subTocItem.style.paddingRight = '1rem';
+                subTocItem.style.paddingRight = '1.25rem';
                 subTocItem.href = `#${art.id}`;
                 subTocItem.innerHTML = `
                     <span class="toc-item-title">${art.title}</span>
@@ -153,15 +161,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!elements.renderSectionsContainer) return;
         elements.renderSectionsContainer.innerHTML = '';
 
+        const term = searchTerm.trim().toLowerCase();
+
         docState.sections.forEach(sec => {
+            const matchesSec = sec.title.toLowerCase().includes(term);
+            
+            const matchingArticles = sec.articles.filter(art => 
+                art.title.toLowerCase().includes(term) || art.content.toLowerCase().includes(term)
+            );
+
+            if (term && !matchesSec && matchingArticles.length === 0) return;
+
             const secBlock = document.createElement('div');
             secBlock.className = 'section-block';
             secBlock.id = sec.id;
             
             let html = `<h2>${sec.title}</h2>`;
 
-            sec.articles.forEach(art => {
-                const formattedContent = (art.content || '').split('\n').join('<br>');
+            const articlesToDisplay = term && !matchesSec ? matchingArticles : sec.articles;
+
+            articlesToDisplay.forEach(art => {
+                const formattedContent = formatTextWithBreaks(art.content);
                 html += `
                     <div class="article-node" id="${art.id}">
                         <div class="article-title-vibrant">${art.title}</div>
@@ -233,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function bindEditorDelegation() {
         if (!elements.editorAccordion) return;
+        
         elements.editorAccordion.addEventListener('input', (e) => {
             const target = e.target;
             if (target.classList.contains('sec-title-input')) {
@@ -277,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateStandaloneHtml() {
         const sectionsHtml = docState.sections.map(sec => {
             const articlesArr = sec.articles.map(art => {
-                const formattedContent = (art.content || '').split('\n').join('<br>');
+                const formattedContent = formatTextWithBreaks(art.content);
                 return `
                     <div class="article-title">${art.title}</div>
                     <div class="article-content">${formattedContent}</div>
@@ -302,17 +323,19 @@ document.addEventListener('DOMContentLoaded', () => {
 <head>
     <meta charset="UTF-8">
     <title>${docState.metadata.orgName} - ${docState.metadata.title}</title>
+    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
     <style>
         @page {
             size: A4;
             margin: 20mm 15mm 20mm 15mm;
             @bottom-left {
                 content: "صفحة " counter(page) " من " counter(pages);
-                font-family: sans-serif;
+                font-family: 'Tajawal', sans-serif;
                 font-size: 9pt;
+                color: #666;
             }
         }
-        body { font-family: system-ui, -apple-system, sans-serif; color: #2b2b2b; line-height: 1.6; margin: 0; padding: 0; }
+        body { font-family: 'Tajawal', system-ui, -apple-system, sans-serif; color: #2b2b2b; line-height: 1.6; margin: 0; padding: 0; }
         .header-container { border-bottom: 2px solid #800020; padding-bottom: 12px; margin-top: 15pt; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .header-title h1 { color: #800020; font-size: 16pt; margin: 0 0 4px 0; }
         .header-title .subtitle { font-size: 11pt; color: #555555; }
@@ -381,6 +404,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         elements.printBtn?.addEventListener('click', () => window.print());
+
+        elements.globalSearch?.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderDocumentView();
+        });
 
         elements.inputDocTitle?.addEventListener('input', (e) => { docState.metadata.title = e.target.value; renderDocumentView(); });
         elements.inputOrgName?.addEventListener('input', (e) => { docState.metadata.orgName = e.target.value; renderDocumentView(); });
