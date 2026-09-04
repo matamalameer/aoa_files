@@ -27,6 +27,27 @@
   --font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --sidebar-width: 440px;
 }
+/* Force main body background to stay dark */
+body {
+  background-color: #0f172a !important; /* or #111827 for gray-900 */
+  overflow-y: auto !important;
+  min-height: 100vh;
+}
+
+/* Ensure Paged.js generated pages wrapper is visible and centered */
+.pagedjs_pages {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2rem !important;
+  padding: 2rem 0 !important;
+}
+
+.pagedjs_page {
+  background: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+  margin: 0 auto !important;
+}
 
 /* Light Theme Variables Toggle */
 body.light-theme {
