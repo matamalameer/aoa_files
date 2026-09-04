@@ -26,8 +26,8 @@ class UIManager {
     this.bindLogoUpload();
     this.bindImportExport();
 
-    // Initial render setup
-    renderManager.renderAll();
+    // Initialize render manager once so it subscribes to state updates and renders once.
+    renderManager.init();
   }
 
   /* -----------------------------------------------------------------
