@@ -5,7 +5,7 @@
  */
 
 import { stateManager } from './StateManager.js';
-import { renderEngine } from './RenderEngine.js';
+import { renderManager } from './RenderManager.js';
 import { exportManager } from './ExportManager.js';
 
 class UIManager {
@@ -27,7 +27,7 @@ class UIManager {
     this.bindImportExport();
 
     // Initial render setup
-    renderEngine.renderAll();
+    renderManager.renderAll();
   }
 
   /* -----------------------------------------------------------------
