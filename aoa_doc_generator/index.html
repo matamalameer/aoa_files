@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ عقد التأسيس - Paged.js Edition</title>
+    
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Disable auto-preview for Paged.js on load to protect interactive editor DOM -->
+    <script>
+        window.PagedConfig = { auto: false };
+    </script>
+    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+
+    <!-- Application Stylesheet -->
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="theme-auto">
+
+    <!-- Screen Control Bar (Hidden on Print) -->
+    <header class="app-header no-print">
+        <div class="header-brand">
+            <button id="sidebarToggle" class="btn-icon" aria-label="تبديل القائمة">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
+            <h1 class="app-title">منشئ عقد التأسيس والشروط الأساسية</h1>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-box">
+                <input type="search" id="globalSearch" placeholder="بحث في المواد والأحكام..." aria-label="بحث">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </div>
+            
+            <button id="themeToggle" class="btn-secondary" title="تبديل المظهر">
+                <span class="theme-icon-light">☀️</span>
+                <span class="theme-icon-dark">🌙</span>
+            </button>
+            
+            <button id="printBtn" class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                <span>طباعة / تصدير PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        
+        <!-- Sidebar Controls Panel (Hidden on Print) -->
+        <aside id="sidebar" class="sidebar-panel no-print">
+            <nav class="sidebar-tabs">
+                <button class="tab-btn active" data-tab="meta">البيانات</button>
+                <button class="tab-btn" data-tab="nav">الفهرس</button>
+                <button class="tab-btn" data-tab="content">المحتوى</button>
+                <button class="tab-btn" data-tab="io">الملفات</button>
+            </nav>
+
+            <div class="sidebar-content">
+                <!-- Metadata Controls -->
+                <section id="tab-meta" class="tab-pane active">
+                    <h3>بيانات الوثيقة</h3>
+                    <div class="form-group">
+                        <label for="inputDocTitle">عنوان الوثيقة</label>
+                        <input type="text" id="inputDocTitle" value="عقد تأسيس الشركة">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputOrgName">اسم الشركة / المؤسسة</label>
+                        <input type="text" id="inputOrgName" value="شركة التقنية المتقدمة ذ.م.م">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDocVersion">رقم الإصدار</label>
+                        <input type="text" id="inputDocVersion" value="v1.0.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDocDate">تاريخ الاعتماد</label>
+                        <input type="date" id="inputDocDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="logoUploader">شعار المؤسسة</label>
+                        <input type="file" id="logoUploader" accept="image/*">
+                        <button id="removeLogoBtn" class="btn-danger-sm hidden">إزالة الشعار</button>
+                    </div>
+                </section>
+
+                <!-- Document Structure Tree -->
+                <section id="tab-nav" class="tab-pane">
+                    <h3>شجرة المستند</h3>
+                    <div id="documentOutline" class="outline-tree"></div>
+                </section>
+
+                <!-- Live Content Editing Panel -->
+                <section id="tab-content" class="tab-pane">
+                    <div class="pane-header">
+                        <h3>إدارة المواد</h3>
+                        <button id="addSectionBtn" class="btn-sm">+ إضافة باب</button>
+                    </div>
+                    <div id="editorAccordion" class="accordion-container"></div>
+                </section>
+
+                <!-- Import / Export Actions -->
+                <section id="tab-io" class="tab-pane">
+                    <h3>استيراد وتصدير البيانات</h3>
+                    <p class="help-text">حفظ أو تحميل بنية المستند أو استخراج نسخة للقراءة المستقلة.</p>
+                    <div class="io-actions">
+                        <button id="exportJsonBtn" class="btn-outline">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                            تصدير JSON
+                        </button>
+                        <button id="exportHtmlBtn" class="btn-outline btn-success">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            تصدير مستند للقراءة (HTML)
+                        </button>
+                        <label for="importJsonInput" class="btn-outline custom-file-upload">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                            استيراد JSON
+                        </label>
+                        <input type="file" id="importJsonInput" accept=".json">
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+        <!-- Document Viewport -->
+        <main class="document-viewport">
+            <div id="documentRender" class="a4-document">
+                
+                <!-- 1. Main Document Cover Page -->
+                <section class="doc-page page-cover">
+                    <div class="cover-header">
+                        <div class="brand-logo-wrapper">
+                            <img id="coverLogo" class="brand-logo" src="" alt="شعار الشركة">
+                        </div>
+                    </div>
+                    <div class="cover-body">
+                        <h1 id="renderOrgName" class="cover-org-name">شركة التقنية المتقدمة ذ.م.م</h1>
+                        <div class="cover-divider"></div>
+                        <h2 id="renderDocTitle" class="cover-title">عقد تأسيس الشركة والنظام الأساسي</h2>
+                    </div>
+                    <div class="cover-footer">
+                        <div class="meta-item">
+                            <span class="meta-label">الإصدار:</span>
+                            <span id="renderDocVersion" class="meta-value">v1.0.0</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">تاريخ الاعتماد:</span>
+                            <span id="renderDocDate" class="meta-value">—</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Table of Contents Page -->
+                <section class="doc-page page-toc">
+                    <h2 class="section-toc-title">فهرس المحتويات</h2>
+                    <div id="renderToc" class="toc-list"></div>
+                </section>
+
+                <!-- 3. Dynamic Section Covers & Content -->
+                <div id="renderSectionsContainer"></div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- HTML Reader Preview Modal -->
+    <div id="previewModal" class="modal-backdrop hidden no-print">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>معاينة مستند القراءة (HTML Reader)</h3>
+                <button id="closeModalBtn" class="btn-icon">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="previewIframe" title="HTML Preview"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDownloadHtmlBtn" class="btn-primary">تحميل ملف HTML</button>
+                <button id="cancelModalBtn" class="btn-secondary">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script src="./app.js" defer></script>
+</body>
+</html>
