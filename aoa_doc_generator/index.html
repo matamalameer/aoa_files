@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     
-    <!-- PagedConfig: Manual trigger to preserve active editor DOM -->
     <script>
         window.PagedConfig = { auto: false };
     </script>
@@ -50,7 +49,7 @@
 
     <div class="app-layout">
         
-        <!-- Sidebar Controls Panel (Hidden on Print) -->
+        <!-- Sidebar Controls Panel -->
         <aside id="sidebar" class="sidebar-panel no-print">
             <nav class="sidebar-tabs">
                 <button class="tab-btn active" data-tab="meta">البيانات</button>
@@ -104,20 +103,10 @@
                 <!-- Import / Export Actions -->
                 <section id="tab-io" class="tab-pane">
                     <h3>تصدير واستيراد</h3>
-                    <p class="help-text">حفظ البيانات أو تصدير النسخة النهائية.</p>
                     <div class="io-actions">
-                        <button id="exportJsonBtn" class="btn-outline">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                            حفظ ملف البيانات JSON
-                        </button>
-                        <button id="exportHtmlBtn" class="btn-outline btn-success">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                            تصدير HTML مستقل
-                        </button>
-                        <label for="importJsonInput" class="btn-outline custom-file-upload">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-                            استيراد JSON
-                        </label>
+                        <button id="exportJsonBtn" class="btn-outline">حفظ ملف البيانات JSON</button>
+                        <button id="exportHtmlBtn" class="btn-outline btn-success">تصدير HTML مستقل</button>
+                        <label for="importJsonInput" class="btn-outline custom-file-upload">استيراد JSON</label>
                         <input type="file" id="importJsonInput" accept=".json">
                     </div>
                 </section>
@@ -128,47 +117,39 @@
         <main class="document-viewport">
             <div id="documentRender" class="a4-document">
                 
-                <!-- 1. Cover Page -->
-                <section class="doc-page page-cover">
-                    <div class="cover-top-spacer"></div>
-                    
-                    <div class="cover-center-content">
-                        <div class="brand-logo-wrapper">
-                            <img id="coverLogo" class="brand-logo" src="" alt="شعار المأتم">
-                        </div>
-                        <h1 id="renderOrgName" class="cover-org-name">حسينية الإمام علي (ع)</h1>
-                        <div class="cover-accent-badge">
-                            <span id="renderDocTitle">النظام الأساسي واللوائح التنظيمية</span>
-                        </div>
+                <!-- Document Header Section -->
+                <div class="document-header">
+                    <div class="header-title-block">
+                        <h1 id="renderOrgName" class="org-title">حسينية الإمام علي (ع)</h1>
+                        <div id="renderDocTitle" class="doc-subtitle">النظام الأساسي واللوائح التنظيمية</div>
                     </div>
-
-                    <div class="cover-footer-card">
-                        <div class="card-item">
-                            <span class="card-label">الاصدار</span>
-                            <span id="renderDocVersion" class="card-value">الإصدار الأول 1.0</span>
-                        </div>
-                        <div class="card-divider"></div>
-                        <div class="card-item">
-                            <span class="card-label">تاريخ الاعتماد</span>
-                            <span id="renderDocDate" class="card-value">—</span>
-                        </div>
+                    <div class="brand-logo-wrapper">
+                        <img id="coverLogo" class="brand-logo" src="" alt="شعار المأتم">
                     </div>
-                </section>
+                </div>
 
-                <!-- 2. Table of Contents Page -->
-                <section class="doc-page page-toc">
+                <!-- Meta Table -->
+                <table class="meta-table">
+                    <tr>
+                        <td><strong>الإصدار:</strong> <span id="renderDocVersion">الإصدار الأول 1.0</span></td>
+                        <td><strong>تاريخ الاعتماد:</strong> <span id="renderDocDate">—</span></td>
+                    </tr>
+                </table>
+
+                <!-- Table of Contents -->
+                <section class="page-toc">
                     <h2 class="section-toc-title">فهرس الأبواب والمواد</h2>
                     <div id="renderToc" class="toc-list"></div>
                 </section>
 
-                <!-- 3. Dynamic Section Covers & Content -->
-                <div id="renderSectionsContainer"></div>
+                <!-- Dynamic Sections and Articles -->
+                <div id="renderSectionsContainer" class="continuous-content"></div>
 
             </div>
         </main>
     </div>
 
-    <!-- HTML Reader Preview Modal -->
+    <!-- Preview Modal -->
     <div id="previewModal" class="modal-backdrop hidden no-print">
         <div class="modal-container">
             <div class="modal-header">
@@ -185,7 +166,6 @@
         </div>
     </div>
 
-    <!-- Application Script Logic -->
     <script src="./app.js" defer></script>
 </body>
 </html>
