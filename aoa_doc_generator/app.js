@@ -161,10 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let html = `<h2>${sec.title}</h2>`;
 
             sec.articles.forEach(art => {
+                const formattedContent = (art.content || '').split('\n').join('<br>');
                 html += `
                     <div class="article-node" id="${art.id}">
                         <div class="article-title-vibrant">${art.title}</div>
-                        <div class="article-content">${art.content.replace(/\n/g, '<br>')}</div>
+                        <div class="article-content">${formattedContent}</div>
                     </div>
                 `;
             });
@@ -274,13 +275,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateStandaloneHtml() {
-        const sectionsHtml = docState.sections.map(sec => `
-            <h2>${sec.title}</h2>
-            ${sec.articles.map(art => `
-                <div class="article-title">${art.title}</div>
-                <div class="article-content">${art.content.replace(/\n/g, '<br>')}</div>
-            `).join('')}
-        `).join('');
+        const sectionsHtml = docState.sections.map(sec => {
+            const articlesArr = sec.articles.map(art => {
+                const formattedContent = (art.content || '').split('\n').join('<br>');
+                return `
+                    <div class="article-title">${art.title}</div>
+                    <div class="article-content">${formattedContent}</div>
+                `;
+            }).join('');
+            return `<h2>${sec.title}</h2>${articlesArr}`;
+        }).join('');
 
         const tocHtml = docState.sections.map((sec) => `
             <tr><td class="toc-chapter">${sec.title}</td></tr>
