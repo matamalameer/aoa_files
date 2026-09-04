@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const DEFAULT_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgwMDAyMCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik0xMiAyTDQgN3Y2YzAgNS41NSAzLzg0IDEwLjc0IDggMTIgNC4xNi0xLjI2IDgtNS40NSA4LTEyVjdsLTgtNXoiLz48cGF0aCBkPSJNMTIgNnY2TDE1IDE1IiBzdHJva2U9IiNjNTliMjciIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
+    const DEFAULT_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMjQgMjQgIIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgwMDAyMCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik0xMiAyTDQgN3Y2YzAgNS41NSAzLzg0IDEwLjc0IDggMTIgNC4xNi0xLjI2IDgtNS40NSA4LTEyVjdsLTgtNXoiLz48cGF0aCBkPSJNMTIgNnY2TDE1IDE1IiBzdHJva2U9IiNjNTliMjciIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     let docState = {
         metadata: {
@@ -102,7 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatTextWithBreaks(text) {
         if (!text) return '';
-        // Safe string splitting to avoid regex SyntaxError in string templates
         return text.split('\n').join('<br>');
     }
 
@@ -134,23 +133,24 @@ document.addEventListener('DOMContentLoaded', () => {
         docState.sections.forEach((sec) => {
             if (!sec.title) return;
             const tocItem = document.createElement('a');
-            tocItem.className = 'toc-item';
+            tocItem.className = 'toc-item toc-section-item';
             tocItem.href = `#${sec.id}`;
             tocItem.innerHTML = `
-                <span class="toc-item-title" style="font-weight: bold;">${sec.title}</span>
+                <span class="toc-item-title">${sec.title}</span>
                 <span class="toc-dots"></span>
+                <span class="toc-page-num" data-target="${sec.id}"></span>
             `;
             elements.renderToc.appendChild(tocItem);
 
             sec.articles.forEach(art => {
                 if (!art.title) return;
                 const subTocItem = document.createElement('a');
-                subTocItem.className = 'toc-item';
-                subTocItem.style.paddingRight = '1.25rem';
+                subTocItem.className = 'toc-item toc-article-item';
                 subTocItem.href = `#${art.id}`;
                 subTocItem.innerHTML = `
                     <span class="toc-item-title">${art.title}</span>
                     <span class="toc-dots"></span>
+                    <span class="toc-page-num" data-target="${art.id}"></span>
                 `;
                 elements.renderToc.appendChild(subTocItem);
             });
@@ -165,33 +165,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
         docState.sections.forEach(sec => {
             const matchesSec = sec.title.toLowerCase().includes(term);
-            
             const matchingArticles = sec.articles.filter(art => 
                 art.title.toLowerCase().includes(term) || art.content.toLowerCase().includes(term)
             );
 
             if (term && !matchesSec && matchingArticles.length === 0) return;
 
-            const secBlock = document.createElement('div');
-            secBlock.className = 'section-block';
-            secBlock.id = sec.id;
-            
-            let html = `<h2>${sec.title}</h2>`;
+            // SECTION COVER PAGE
+            const secCoverPage = document.createElement('section');
+            secCoverPage.className = 'section-cover-page';
+            secCoverPage.id = sec.id;
+            secCoverPage.innerHTML = `<h2 class="section-cover-title">${sec.title}</h2>`;
+            elements.renderSectionsContainer.appendChild(secCoverPage);
+
+            // ARTICLES WRAPPER
+            const articlesContainer = document.createElement('div');
+            articlesContainer.className = 'section-articles-container';
 
             const articlesToDisplay = term && !matchesSec ? matchingArticles : sec.articles;
 
             articlesToDisplay.forEach(art => {
                 const formattedContent = formatTextWithBreaks(art.content);
-                html += `
-                    <div class="article-node" id="${art.id}">
-                        <div class="article-title-vibrant">${art.title}</div>
-                        <div class="article-content">${formattedContent}</div>
-                    </div>
+                const artNode = document.createElement('div');
+                artNode.className = 'article-node';
+                artNode.id = art.id;
+                artNode.innerHTML = `
+                    <div class="article-title-vibrant">${art.title}</div>
+                    <div class="article-content">${formattedContent}</div>
                 `;
+                articlesContainer.appendChild(artNode);
             });
 
-            secBlock.innerHTML = html;
-            elements.renderSectionsContainer.appendChild(secBlock);
+            elements.renderSectionsContainer.appendChild(articlesContainer);
         });
     }
 
@@ -300,22 +305,40 @@ document.addEventListener('DOMContentLoaded', () => {
             const articlesArr = sec.articles.map(art => {
                 const formattedContent = formatTextWithBreaks(art.content);
                 return `
-                    <div class="article-title">${art.title}</div>
-                    <div class="article-content">${formattedContent}</div>
+                    <div class="article-node" id="${art.id}">
+                        <div class="article-title">${art.title}</div>
+                        <div class="article-content">${formattedContent}</div>
+                    </div>
                 `;
             }).join('');
-            return `<h2>${sec.title}</h2>${articlesArr}`;
+
+            return `
+                <section class="section-cover-page" id="${sec.id}">
+                    <h2 class="section-cover-title">${sec.title}</h2>
+                </section>
+                <div class="section-articles-container">
+                    ${articlesArr}
+                </div>
+            `;
         }).join('');
 
         const tocHtml = docState.sections.map((sec) => `
-            <tr><td class="toc-chapter">${sec.title}</td></tr>
+            <a href="#${sec.id}" class="toc-item toc-section-item">
+                <span class="toc-item-title">${sec.title}</span>
+                <span class="toc-dots"></span>
+                <span class="toc-page-num"></span>
+            </a>
             ${sec.articles.map(art => `
-                <tr><td class="toc-article">${art.title}</td></tr>
+                <a href="#${art.id}" class="toc-item toc-article-item">
+                    <span class="toc-item-title">${art.title}</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page-num"></span>
+                </a>
             `).join('')}
         `).join('');
 
         const logoHtml = docState.metadata.logoUri 
-            ? `<img src="${docState.metadata.logoUri}" alt="Logo" class="logo">`
+            ? `<img src="${docState.metadata.logoUri}" alt="Logo" class="cover-main-logo">`
             : '';
 
         return `<!DOCTYPE html>
@@ -326,49 +349,90 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
     <style>
         @page {
-            size: A4;
-            margin: 20mm 15mm 20mm 15mm;
+            size: A4 portrait;
+            margin: 25mm 15mm 20mm 15mm;
+            @top-right {
+                content: "${docState.metadata.orgName} - ${docState.metadata.title}";
+                font-family: 'Tajawal', sans-serif;
+                font-size: 8.5pt;
+                color: #800020;
+                font-weight: bold;
+            }
             @bottom-left {
                 content: "صفحة " counter(page) " من " counter(pages);
                 font-family: 'Tajawal', sans-serif;
-                font-size: 9pt;
-                color: #666;
+                font-size: 8.5pt;
+                color: #64748b;
+            }
+            @bottom-right {
+                content: "إصدار: ${docState.metadata.version} | اعتمد: ${docState.metadata.date || '—'}";
+                font-family: 'Tajawal', sans-serif;
+                font-size: 8.5pt;
+                color: #64748b;
             }
         }
+
+        @page :first {
+            @top-right { content: none; }
+            @bottom-left { content: none; }
+            @bottom-right { content: none; }
+        }
+
+        @page section-cover {
+            @top-right { content: none; }
+            @bottom-left { content: none; }
+            @bottom-right { content: none; }
+        }
+
         body { font-family: 'Tajawal', system-ui, -apple-system, sans-serif; color: #2b2b2b; line-height: 1.6; margin: 0; padding: 0; }
-        .header-container { border-bottom: 2px solid #800020; padding-bottom: 12px; margin-top: 15pt; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .header-title h1 { color: #800020; font-size: 16pt; margin: 0 0 4px 0; }
-        .header-title .subtitle { font-size: 11pt; color: #555555; }
-        .logo { max-height: 60px; width: auto; object-fit: contain; }
-        .meta-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; background-color: #f8f9fa; }
-        .meta-table td { padding: 8px 12px; border: 1px solid #e0e0e0; font-size: 9.5pt; }
-        h2 { color: #800020; font-size: 12pt; border-bottom: 1px solid #800020; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; }
-        .article-title { font-weight: bold; color: #000000; margin-top: 10px; margin-bottom: 4px; }
-        .article-content { font-size: 10.5pt; text-align: justify; margin-bottom: 12px; }
-        .toc-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .toc-table td { text-align: right; padding: 4px 8px; font-size: 10pt; border-bottom: 1px dashed #ccc; }
-        .toc-chapter { font-weight: bold; color: #800020; padding-top: 6px !important; }
-        .toc-article { padding-right: 20px !important; color: #333; }
+        
+        .doc-cover-page {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; page-break-after: always; break-after: page;
+        }
+        .cover-main-logo { max-height: 130px; margin-bottom: 1.5rem; }
+        .cover-org-title { font-size: 22pt; color: #800020; font-weight: 800; margin-bottom: 0.5rem; }
+        .cover-divider { width: 80px; height: 3px; background-color: #c59b27; margin: 1rem auto; }
+        .cover-doc-title { font-size: 16pt; color: #1e293b; font-weight: 700; margin-bottom: 2rem; }
+        .cover-metadata-card { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem 2rem; border-radius: 8px; font-size: 10pt; }
+
+        .doc-toc-page { page-break-after: always; break-after: page; }
+        .section-toc-title { font-size: 14pt; color: #800020; border-bottom: 2px solid #800020; padding-bottom: 6px; margin-bottom: 15px; }
+        .toc-item { display: flex; justify-content: space-between; align-items: baseline; text-decoration: none; color: #0f172a; margin-bottom: 0.5rem; font-size: 10pt; }
+        .toc-section-item { font-weight: bold; color: #800020; margin-top: 1rem; }
+        .toc-article-item { padding-right: 1.25rem; color: #334155; }
+        .toc-dots { flex: 1; border-bottom: 1px dashed #cbd5e1; margin: 0 0.5rem; }
+        .toc-page-num::after { content: target-counter(attr(href), page); }
+
+        .section-cover-page {
+            page: section-cover; height: 100vh; display: flex; justify-content: center; align-items: center;
+            text-align: center; page-break-before: always; break-before: page; page-break-after: always; break-after: page;
+        }
+        .section-cover-title { font-size: 20pt; color: #800020; border-bottom: 3px solid #c59b27; padding-bottom: 10px; }
+
+        .section-articles-container { page-break-after: always; break-after: page; }
+        .article-node { margin-bottom: 15px; }
+        .article-title { font-weight: bold; color: #800020; font-size: 11pt; margin-bottom: 4px; }
+        .article-content { font-size: 10pt; text-align: justify; }
     </style>
 </head>
 <body>
-    <div class="header-container">
-        <div class="header-title">
-            <h1>${docState.metadata.orgName}</h1>
-            <div class="subtitle">${docState.metadata.title}</div>
-        </div>
+    <section class="doc-cover-page">
         ${logoHtml}
-    </div>
-    <table class="meta-table">
-        <tr>
-            <td><strong>الإصدار:</strong> ${docState.metadata.version}</td>
-            <td><strong>تاريخ الاعتماد:</strong> ${docState.metadata.date || '—'}</td>
-        </tr>
-    </table>
-    <h2>فهرس الأبواب والمواد</h2>
-    <table class="toc-table">
+        <h1 class="cover-org-title">${docState.metadata.orgName}</h1>
+        <div class="cover-divider"></div>
+        <h2 class="cover-doc-title">${docState.metadata.title}</h2>
+        <div class="cover-metadata-card">
+            <p><strong>رقم الإصدار:</strong> ${docState.metadata.version}</p>
+            <p><strong>تاريخ الاعتماد:</strong> ${docState.metadata.date || '—'}</p>
+        </div>
+    </section>
+
+    <section class="doc-toc-page">
+        <h2 class="section-toc-title">فهرس الأبواب والمواد</h2>
         ${tocHtml}
-    </table>
+    </section>
+
     ${sectionsHtml}
 </body>
 </html>`;
