@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منشئ النظام الأساسي - للحسينيات والمآتم</title>
+    <title>منشئ النظام الأساسي واللوائح التنظيمية</title>
     
-    <!-- Google Fonts: Tajawal -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     
+    <!-- Paged.js Script for Advanced Pagination & Page Breaks -->
+    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+
     <!-- Application Stylesheet -->
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body class="theme-auto">
 
-    <!-- Screen Control Bar (Hidden on Print) -->
+    <!-- Top App Header -->
     <header class="app-header no-print">
         <div class="header-brand">
             <button id="sidebarToggle" class="btn-icon" aria-label="تبديل القائمة">
@@ -44,7 +47,7 @@
 
     <div class="app-layout">
         
-        <!-- Sidebar Controls Panel -->
+        <!-- Sidebar Controls -->
         <aside id="sidebar" class="sidebar-panel no-print">
             <nav class="sidebar-tabs">
                 <button class="tab-btn active" data-tab="meta">البيانات</button>
@@ -54,7 +57,7 @@
             </nav>
 
             <div class="sidebar-content">
-                <!-- Metadata Controls -->
+                <!-- Tab: Meta -->
                 <section id="tab-meta" class="tab-pane active">
                     <h3>بيانات الحسينية / المأتم</h3>
                     <div class="form-group">
@@ -66,8 +69,8 @@
                         <input type="text" id="inputDocTitle" value="النظام الأساسي واللوائح التنظيمية">
                     </div>
                     <div class="form-group">
-                        <label for="inputDocVersion">رقم الاصدار</label>
-                        <input type="text" id="inputDocVersion" value="الإصدار الأول 1.0">
+                        <label for="inputDocVersion">رقم الإصدار</label>
+                        <input type="text" id="inputDocVersion" value="v1.0.0">
                     </div>
                     <div class="form-group">
                         <label for="inputDocDate">تاريخ الاعتماد</label>
@@ -80,13 +83,13 @@
                     </div>
                 </section>
 
-                <!-- Document Structure Tree -->
+                <!-- Tab: Outline Navigation -->
                 <section id="tab-nav" class="tab-pane">
                     <h3>شجرة المستند</h3>
                     <div id="documentOutline" class="outline-tree"></div>
                 </section>
 
-                <!-- Live Content Editing Panel -->
+                <!-- Tab: Content Editor -->
                 <section id="tab-content" class="tab-pane">
                     <div class="pane-header">
                         <h3>إدارة أبواب ومواد النظام</h3>
@@ -95,7 +98,7 @@
                     <div id="editorAccordion" class="accordion-container"></div>
                 </section>
 
-                <!-- Import / Export Actions -->
+                <!-- Tab: Import/Export -->
                 <section id="tab-io" class="tab-pane">
                     <h3>تصدير واستيراد</h3>
                     <div class="io-actions">
@@ -108,43 +111,41 @@
             </div>
         </aside>
 
-        <!-- Document Viewport -->
+        <!-- Main Workspace Document Preview -->
         <main class="document-viewport">
             <div id="documentRender" class="a4-document">
                 
-                <!-- Document Header Section -->
-                <div class="document-header">
-                    <div class="header-title-block">
-                        <h1 id="renderOrgName" class="org-title">حسينية الإمام علي (ع)</h1>
-                        <div id="renderDocTitle" class="doc-subtitle">النظام الأساسي واللوائح التنظيمية</div>
+                <!-- COVER PAGE -->
+                <section class="doc-cover-page">
+                    <div class="cover-content">
+                        <div class="cover-logo-wrapper">
+                            <img id="coverLogo" class="cover-main-logo" src="" alt="شعار المأتم">
+                        </div>
+                        <h1 id="renderOrgName" class="cover-org-title">حسينية الإمام علي (ع)</h1>
+                        <div class="cover-divider"></div>
+                        <h2 id="renderDocTitle" class="cover-doc-title">النظام الأساسي واللوائح التنظيمية</h2>
+                        
+                        <div class="cover-metadata-card">
+                            <p><strong>رقم الإصدار:</strong> <span id="renderDocVersion">v1.0.0</span></p>
+                            <p><strong>تاريخ الاعتماد:</strong> <span id="renderDocDate">—</span></p>
+                        </div>
                     </div>
-                    <div class="brand-logo-wrapper">
-                        <img id="coverLogo" class="brand-logo" src="" alt="شعار المأتم">
-                    </div>
-                </div>
+                </section>
 
-                <!-- Meta Table -->
-                <table class="meta-table">
-                    <tr>
-                        <td><strong>الإصدار:</strong> <span id="renderDocVersion">الإصدار الأول 1.0</span></td>
-                        <td><strong>تاريخ الاعتماد:</strong> <span id="renderDocDate">—</span></td>
-                    </tr>
-                </table>
-
-                <!-- Table of Contents -->
-                <section class="page-toc">
+                <!-- TABLE OF CONTENTS PAGE -->
+                <section class="doc-toc-page">
                     <h2 class="section-toc-title">فهرس الأبواب والمواد</h2>
                     <div id="renderToc" class="toc-list"></div>
                 </section>
 
-                <!-- Dynamic Sections and Articles -->
+                <!-- SECTIONS & ARTICLES CONTENT CONTAINER -->
                 <div id="renderSectionsContainer" class="continuous-content"></div>
 
             </div>
         </main>
     </div>
 
-    <!-- Preview Modal -->
+    <!-- HTML Preview Modal -->
     <div id="previewModal" class="modal-backdrop hidden no-print">
         <div class="modal-container">
             <div class="modal-header">
