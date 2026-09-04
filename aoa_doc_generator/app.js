@@ -1,18 +1,12 @@
-/**
- * Articles of Association / Bylaws Generator for Husseiniya / Ma'tam
- * Fully Fixed & Dynamic JS with Guarded Null Checks
- */
-
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Vibrant Emblem Placeholder for Husseiniya / Ma'tam
     const DEFAULT_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgwMDAyMCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik0xMiAyTDQgN3Y2YzAgNS41NSAzLzg0IDEwLjc0IDggMTIgNC4xNi0xLjI2IDgtNS40NSA4LTEyVjdsLTgtNXoiLz48cGF0aCBkPSJNMTIgNnY2TDE1IDE1IiBzdHJva2U9IiNjNTliMjciIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     let docState = {
         metadata: {
             title: "النظام الأساسي واللوائح التنظيمية",
             orgName: "حسينية الإمام علي (ع)",
-            version: "الإصدار الأول 1.0",
+            version: "v1.0.0",
             date: new Date().toISOString().split('T')[0],
             logoUri: DEFAULT_LOGO
         },
@@ -28,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     {
                         id: "art-2",
-                        title: "المادة (2): الأهداف والغايات",
+                        title: "المادة (2): الأهداف وغايات المؤسسة",
                         content: "تهدف الحسينية إلى تعزيز القيم الإسلامية الإنسانية، نشر التوعية الثقافية والدينية، وترسيخ التكافل الاجتماعي والتطوع في خدمة المجتمع."
                     }
                 ]
@@ -54,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebarToggle: document.getElementById('sidebarToggle'),
         themeToggle: document.getElementById('themeToggle'),
         printBtn: document.getElementById('printBtn'),
-        globalSearch: document.getElementById('globalSearch'),
         
         tabBtns: document.querySelectorAll('.tab-btn'),
         tabPanes: document.querySelectorAll('.tab-pane'),
@@ -111,12 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.renderDocVersion) elements.renderDocVersion.textContent = docState.metadata.version;
         if (elements.renderDocDate) elements.renderDocDate.textContent = docState.metadata.date || '—';
 
-        const coverPage = document.querySelector('.page-cover');
-        if (coverPage) {
-            coverPage.setAttribute('data-org', docState.metadata.orgName);
-            coverPage.setAttribute('data-version', docState.metadata.version);
-        }
-
         if (elements.coverLogo) {
             if (docState.metadata.logoUri) {
                 elements.coverLogo.src = docState.metadata.logoUri;
@@ -136,22 +123,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTableOfContents() {
         if (!elements.renderToc) return;
         elements.renderToc.innerHTML = '';
-        docState.sections.forEach((sec, idx) => {
+        docState.sections.forEach((sec) => {
+            if (!sec.title) return;
             const tocItem = document.createElement('a');
             tocItem.className = 'toc-item';
             tocItem.href = `#${sec.id}`;
             tocItem.innerHTML = `
-                <span class="toc-item-title">${sec.title}</span>
+                <span class="toc-item-title" style="font-weight: bold;">${sec.title}</span>
                 <span class="toc-dots"></span>
-                <span class="toc-page-ref">باب ${idx + 1}</span>
             `;
             elements.renderToc.appendChild(tocItem);
 
             sec.articles.forEach(art => {
+                if (!art.title) return;
                 const subTocItem = document.createElement('a');
                 subTocItem.className = 'toc-item';
-                subTocItem.style.paddingRight = '1.5rem';
-                subTocItem.style.fontSize = '0.9rem';
+                subTocItem.style.paddingRight = '1rem';
                 subTocItem.href = `#${art.id}`;
                 subTocItem.innerHTML = `
                     <span class="toc-item-title">${art.title}</span>
@@ -167,35 +154,23 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.renderSectionsContainer.innerHTML = '';
 
         docState.sections.forEach(sec => {
-            // Vibrant Section Cover Page
-            const coverNode = document.createElement('section');
-            coverNode.className = 'section-cover-page';
-            coverNode.id = sec.id;
-            coverNode.innerHTML = `
-                <div class="vibrant-section-card">
-                    <h2>${sec.title}</h2>
-                    <div class="section-card-line"></div>
-                </div>
-            `;
-            elements.renderSectionsContainer.appendChild(coverNode);
-
-            // Articles Flow
-            const contentNode = document.createElement('div');
-            contentNode.className = 'section-content-wrapper';
+            const secBlock = document.createElement('div');
+            secBlock.className = 'section-block';
+            secBlock.id = sec.id;
+            
+            let html = `<h2>${sec.title}</h2>`;
 
             sec.articles.forEach(art => {
-                const articleNode = document.createElement('article');
-                articleNode.className = 'article-node';
-                articleNode.id = art.id;
-                articleNode.innerHTML = `
-                    <h3 class="article-title-vibrant">${art.title}</h3>
-                    <p class="article-content">${art.content.replace(/
-/g, '<br>')}</p>
+                html += `
+                    <div class="article-node" id="${art.id}">
+                        <div class="article-title-vibrant">${art.title}</div>
+                        <div class="article-content">${art.content.replace(/\n/g, '<br>')}</div>
+                    </div>
                 `;
-                contentNode.appendChild(articleNode);
             });
 
-            elements.renderSectionsContainer.appendChild(contentNode);
+            secBlock.innerHTML = html;
+            elements.renderSectionsContainer.appendChild(secBlock);
         });
     }
 
@@ -300,131 +275,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function generateStandaloneHtml() {
         const sectionsHtml = docState.sections.map(sec => `
-            <section class="section-cover-page" id="${sec.id}">
-                <div class="vibrant-section-card">
-                    <h2>${sec.title}</h2>
-                    <div class="section-card-line"></div>
-                </div>
-            </section>
-            <div class="section-content-wrapper">
-                ${sec.articles.map(art => `
-                    <article class="article-node" id="${art.id}">
-                        <h3 class="article-title-vibrant">${art.title}</h3>
-                        <p class="article-content">${art.content.replace(/
-/g, '<br>')}</p>
-                    </article>
-                `).join('')}
-            </div>
+            <h2>${sec.title}</h2>
+            ${sec.articles.map(art => `
+                <div class="article-title">${art.title}</div>
+                <div class="article-content">${art.content.replace(/\n/g, '<br>')}</div>
+            `).join('')}
         `).join('');
 
-        const tocHtml = docState.sections.map((sec, idx) => `
-            <a class="toc-item" href="#${sec.id}">
-                <span class="toc-item-title">${sec.title}</span>
-                <span class="toc-dots"></span>
-                <span class="toc-page-ref">باب ${idx + 1}</span>
-            </a>
+        const tocHtml = docState.sections.map((sec) => `
+            <tr><td class="toc-chapter">${sec.title}</td></tr>
             ${sec.articles.map(art => `
-                <a class="toc-item" style="padding-right: 1.5rem; font-size: 0.9rem;" href="#${art.id}">
-                    <span class="toc-item-title">${art.title}</span>
-                    <span class="toc-dots"></span>
-                </a>
+                <tr><td class="toc-article">${art.title}</td></tr>
             `).join('')}
         `).join('');
 
         const logoHtml = docState.metadata.logoUri 
-            ? `<img src="${docState.metadata.logoUri}" alt="Logo" class="brand-logo">`
+            ? `<img src="${docState.metadata.logoUri}" alt="Logo" class="logo">`
             : '';
 
         return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${docState.metadata.title} - ${docState.metadata.orgName}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+    <title>${docState.metadata.orgName} - ${docState.metadata.title}</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; color: #0f172a; direction: rtl; text-align: right; line-height: 1.6; }
-        .reader-container { max-width: 210mm; margin: 0 auto; background: #ffffff; padding: 20mm 15mm; }
-        
-        /* Cover Page */
-        .page-cover { page: cover-page; break-after: page; min-height: 250mm; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; }
-        .cover-center-content { margin: auto 0; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .brand-logo { max-width: 220px; max-height: 220px; object-fit: contain; margin-bottom: 2rem; }
-        .cover-org-name { font-size: 2.3rem; font-weight: 800; color: #800020; margin-bottom: 1.25rem; }
-        .cover-accent-badge { display: inline-block; padding: 0.75rem 2rem; background: linear-gradient(135deg, rgba(128,0,32,0.06) 0%, rgba(197,155,39,0.12) 100%); border-right: 4px solid #800020; border-left: 4px solid #c59b27; border-radius: 6px; }
-        .cover-accent-badge span { font-size: 1.4rem; font-weight: 700; color: #800020; }
-        
-        .cover-footer-card { width: 85%; display: flex; align-items: center; justify-content: space-around; background-color: #fdfbf7; border: 1px solid rgba(197, 155, 39, 0.3); border-radius: 10px; padding: 1rem 1.5rem; }
-        .card-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
-        .card-label { font-size: 0.8rem; color: #888888; font-weight: 600; }
-        .card-value { font-size: 0.95rem; font-weight: 700; color: #800020; }
-        .card-divider { width: 1px; height: 32px; background-color: rgba(197, 155, 39, 0.3); }
-
-        /* Header Bar */
-        .header-bar-centered { display: flex; align-items: center; justify-content: center; gap: 0.75rem; border-bottom: 1.5px solid #c59b27; padding-bottom: 6px; width: 100%; }
-        .header-logo-mini { height: 22px; width: auto; object-fit: contain; }
-        .header-title-text { font-size: 9.5pt; font-weight: 700; color: #800020; }
-
-        /* TOC & Sections */
-        .page-toc { page: content-page; break-before: page; break-after: page; margin-bottom: 3rem; }
-        .section-toc-title { font-size: 1.6rem; color: #800020; border-bottom: 3px solid #c59b27; padding-bottom: 0.5rem; margin-bottom: 1.75rem; text-align: center; }
-        .toc-list { display: flex; flex-direction: column; gap: 0.85rem; }
-        .toc-item { display: flex; justify-content: space-between; align-items: baseline; font-size: 1rem; text-decoration: none; color: #0f172a; }
-        .toc-dots { flex: 1; border-bottom: 1px dotted #94a3b8; margin: 0 0.75rem; }
-        
-        .section-cover-page { page: section-cover; break-before: page; break-after: page; min-height: 230mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .vibrant-section-card { width: 90%; padding: 3.5rem 2rem; background: linear-gradient(135deg, rgba(128, 0, 32, 0.04) 0%, rgba(197, 155, 39, 0.08) 100%); border: 2px solid #c59b27; border-radius: 16px; }
-        .vibrant-section-card h2 { font-size: 2.2rem; font-weight: 800; color: #800020; margin: 0; }
-        .section-card-line { width: 60px; height: 4px; background: #c59b27; margin: 1.25rem auto 0 auto; border-radius: 2px; }
-
-        .article-node { margin-top: 1.5rem; margin-bottom: 1.75rem; break-inside: avoid; }
-        .article-title-vibrant { font-size: 1.2rem; font-weight: 800; color: #800020; background-color: #fdfbf7; border-right: 5px solid #c59b27; padding: 0.5rem 1rem; border-radius: 0 6px 6px 0; margin-bottom: 0.75rem; }
-        .article-content { font-size: 1rem; line-height: 1.8; color: #1e293b; text-align: justify; }
-
         @page {
-            size: A4 portrait;
-            margin: 28mm 15mm 22mm 15mm;
-            @bottom-left { content: "صفحة " counter(page) " من " counter(pages); font-family: 'Tajawal'; font-size: 8.5pt; font-weight: 600; color: #64748b; }
-            @bottom-right { content: "${docState.metadata.version} — ${docState.metadata.orgName}"; font-family: 'Tajawal'; font-size: 8.5pt; font-weight: 600; color: #800020; }
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+            @bottom-left {
+                content: "صفحة " counter(page) " من " counter(pages);
+                font-family: sans-serif;
+                font-size: 9pt;
+            }
         }
-        @page cover-page { margin: 15mm; @top-center { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
-        @page section-cover { margin: 15mm; @top-center { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
+        body { font-family: system-ui, -apple-system, sans-serif; color: #2b2b2b; line-height: 1.6; margin: 0; padding: 0; }
+        .header-container { border-bottom: 2px solid #800020; padding-bottom: 12px; margin-top: 15pt; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .header-title h1 { color: #800020; font-size: 16pt; margin: 0 0 4px 0; }
+        .header-title .subtitle { font-size: 11pt; color: #555555; }
+        .logo { max-height: 60px; width: auto; object-fit: contain; }
+        .meta-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; background-color: #f8f9fa; }
+        .meta-table td { padding: 8px 12px; border: 1px solid #e0e0e0; font-size: 9.5pt; }
+        h2 { color: #800020; font-size: 12pt; border-bottom: 1px solid #800020; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; }
+        .article-title { font-weight: bold; color: #000000; margin-top: 10px; margin-bottom: 4px; }
+        .article-content { font-size: 10.5pt; text-align: justify; margin-bottom: 12px; }
+        .toc-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .toc-table td { text-align: right; padding: 4px 8px; font-size: 10pt; border-bottom: 1px dashed #ccc; }
+        .toc-chapter { font-weight: bold; color: #800020; padding-top: 6px !important; }
+        .toc-article { padding-right: 20px !important; color: #333; }
     </style>
 </head>
 <body>
-    <div class="reader-container">
-        <header class="page-cover">
-            <div class="cover-center-content">
-                ${logoHtml}
-                <h1 class="cover-org-name">${docState.metadata.orgName}</h1>
-                <div class="cover-accent-badge">
-                    <span>${docState.metadata.title}</span>
-                </div>
-            </div>
-            <div class="cover-footer-card">
-                <div class="card-item">
-                    <span class="card-label">الاصدار</span>
-                    <span class="card-value">${docState.metadata.version}</span>
-                </div>
-                <div class="card-divider"></div>
-                <div class="card-item">
-                    <span class="card-label">تاريخ الاعتماد</span>
-                    <span class="card-value">${docState.metadata.date || '—'}</span>
-                </div>
-            </div>
-        </header>
-
-        <nav class="page-toc">
-            <h2 class="section-toc-title">فهرس الأبواب والمواد</h2>
-            <div class="toc-list">${tocHtml}</div>
-        </nav>
-
-        <main>${sectionsHtml}</main>
+    <div class="header-container">
+        <div class="header-title">
+            <h1>${docState.metadata.orgName}</h1>
+            <div class="subtitle">${docState.metadata.title}</div>
+        </div>
+        ${logoHtml}
     </div>
+    <table class="meta-table">
+        <tr>
+            <td><strong>الإصدار:</strong> ${docState.metadata.version}</td>
+            <td><strong>تاريخ الاعتماد:</strong> ${docState.metadata.date || '—'}</td>
+        </tr>
+    </table>
+    <h2>فهرس الأبواب والمواد</h2>
+    <table class="toc-table">
+        ${tocHtml}
+    </table>
+    ${sectionsHtml}
 </body>
 </html>`;
     }
