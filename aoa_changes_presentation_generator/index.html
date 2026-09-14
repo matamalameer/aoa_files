@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محرر جدول مقارنة تعديلات النظام الأساسي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Quill Rich Text Editor Theme -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Editor Sidebar -->
+    <div class="editor-panel">
+        <h2 id="formTitle">إضافة مادة جديدة / تعديل</h2>
+
+        <div class="form-group">
+            <label for="logoInput">شعار الجمعية / المؤسسة:</label>
+            <input type="file" id="logoInput" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="actionType">نوع الإجراء:</label>
+            <select id="actionType" onchange="handleActionTypeChange()">
+                <option value="modify">تعديل مادة قائمة</option>
+                <option value="add">إضافة مادة جديدة</option>
+                <option value="delete">إلغاء مادة قائمة</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="articleTitle">عنوان المادة / الإجراء:</label>
+            <input type="text" id="articleTitle" placeholder="مثال: المادة (12): اشتراكات الأعضاء">
+        </div>
+
+        <div class="form-group">
+            <label>قبل التعديل:</label>
+            <div id="oldTextEditor" class="rich-editor"></div>
+        </div>
+
+        <div class="form-group">
+            <label>بعد التعديل:</label>
+            <div id="newTextEditor" class="rich-editor"></div>
+        </div>
+
+        <div class="form-group">
+            <label>المبرر والأثر:</label>
+            <div id="reasonTextEditor" class="rich-editor"></div>
+        </div>
+
+        <button id="addBtn" class="btn btn-add">+ إضافة المادة</button>
+        <button id="cancelBtn" class="btn btn-cancel" style="display: none;">إلغاء التعديل</button>
+
+        <hr class="divider">
+
+        <div class="form-group">
+            <label>قائمة المواد المُدخلة:</label>
+            <div id="slidesList"></div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="actions-group">
+            <button id="downloadPdfBtn" class="btn btn-pdf">تصدير PDF / طباعة (A4)</button>
+            <button id="exportHtmlBtn" class="btn btn-export">تصدير العرض التقديمي (HTML)</button>
+            <div class="json-actions">
+                <button id="exportJsonBtn" class="btn btn-json">حفظ البيانات (JSON)</button>
+                <label for="importJsonInput" class="btn btn-json-import">استرجاع بيانات</label>
+                <input type="file" id="importJsonInput" accept=".json" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Panel -->
+    <div class="preview-panel">
+        <div class="view-switcher">
+            <button id="btnViewPresentation" class="switch-btn active">شاشة العرض (Presentation)</button>
+            <button id="btnViewPdf" class="switch-btn">معاينة التقرير (PDF/Print)</button>
+        </div>
+        <div class="preview-viewport">
+            <iframe id="previewFrame"></iframe>
+        </div>
+    </div>
+
+    <!-- Quill Editor Library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
