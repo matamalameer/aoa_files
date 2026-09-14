@@ -5,6 +5,11 @@ import { uiManager } from './modules/UIManager.js';
 
 class App {
   static init() {
+    if (window.__aoaAppInitialized) {
+      return;
+    }
+
+    window.__aoaAppInitialized = true;
     uiManager.init();
     console.log('[Bylaws App] Bootstrapped successfully.');
   }

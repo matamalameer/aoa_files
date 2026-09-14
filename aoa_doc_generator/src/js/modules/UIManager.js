@@ -7,17 +7,26 @@
 import { stateManager } from './StateManager.js';
 import { renderManager } from './RenderManager.js';
 import { exportManager } from './ExportManager.js';
+import { orderManager } from './OrderManager.js';
 
 class UIManager {
   constructor() {
     this.currentZoom = 100;
     this.activeModal = null;
+    this.initialized = false;
   }
 
   /**
    * Initializes all event listeners and renders the initial UI state.
    */
   init() {
+    if (this.initialized) {
+      return;
+    }
+
+    this.initialized = true;
+    this.bindSidebarTabs();
+    this.bindThemeToggle();
     this.bindMetadataInputs();
     this.bindOutlineEvents();
     this.bindActionButtons();
@@ -31,7 +40,35 @@ class UIManager {
   }
 
   /* -----------------------------------------------------------------
-   * 1. METADATA INPUT BINDINGS
+   * 1. SIDEBAR TAB SWITCHER
+   * ----------------------------------------------------------------- */
+
+  bindSidebarTabs() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetTab = button.dataset.tab;
+        if (!targetTab) return;
+
+        tabButtons.forEach((btn) => {
+          const isActive = btn === button;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', String(isActive));
+        });
+
+        tabPanels.forEach((panel) => {
+          const isActive = panel.id === targetTab;
+          panel.classList.toggle('active', isActive);
+          panel.hidden = !isActive;
+        });
+      });
+    });
+  }
+
+  /* -----------------------------------------------------------------
+   * 2. METADATA INPUT BINDINGS
    * ----------------------------------------------------------------- */
 
   /**
@@ -55,6 +92,25 @@ class UIManager {
     if (versionInput) {
       versionInput.addEventListener('input', (e) => stateManager.updateMetadata({ docVersion: e.target.value }));
     }
+  }
+
+  bindThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    const icon = toggle.querySelector('i');
+    const applyTheme = (isLight) => {
+      document.body.classList.toggle('light-theme', isLight);
+      if (icon) {
+        icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    };
+
+    toggle.addEventListener('click', () => {
+      applyTheme(!document.body.classList.contains('light-theme'));
+    });
+
+    applyTheme(document.body.classList.contains('light-theme'));
   }
 
   /* -----------------------------------------------------------------
@@ -97,11 +153,11 @@ class UIManager {
           break;
         case 'move-section-up':
         case 'move-sec-up':
-          stateManager.reorderSection(sectionId, 'up');
+          orderManager.moveSectionUp(sectionId);
           break;
         case 'move-section-down':
         case 'move-sec-down':
-          stateManager.reorderSection(sectionId, 'down');
+          orderManager.moveSectionDown(sectionId);
           break;
         case 'add-article':
           this.openArticleModal(sectionId);
@@ -116,14 +172,31 @@ class UIManager {
           break;
         case 'move-article-up':
         case 'move-art-up':
-          stateManager.reorderArticle(sectionId, articleId, 'up');
+          orderManager.moveArticleUp(articleId);
           break;
         case 'move-article-down':
         case 'move-art-down':
-          stateManager.reorderArticle(sectionId, articleId, 'down');
+          orderManager.moveArticleDown(articleId);
           break;
-        case 'transfer-article':
+        case 'select-article':
+          renderManager.selectArticle(articleId);
           break;
+        case 'transfer-article': {
+          const select = target.closest('select');
+          if (select && select.value) {
+            orderManager.transferArticleToSection(articleId, select.value);
+          }
+          break;
+        }
+      }
+    });
+
+    treeContainer.addEventListener('change', (e) => {
+      const input = e.target.closest('.section-title-input');
+      if (!input) return;
+      const secId = input.dataset.secId;
+      if (secId && input.value.trim()) {
+        stateManager.updateSection(secId, input.value);
       }
     });
 

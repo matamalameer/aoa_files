@@ -18,13 +18,13 @@ class ExportManager {
   exportJSON() {
     const state = stateManager.getState();
     const jsonString = JSON.stringify(state, null, 2);
-    
-    // Sanitize organization name for filename
+
     const orgName = (state.metadata.orgName || 'bylaws')
       .replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_');
     const fileName = `${orgName}_bylaws_backup.json`;
 
     this.downloadFile(fileName, jsonString, 'application/json');
+    return true;
   }
 
   /**
@@ -169,6 +169,7 @@ class ExportManager {
     const fileName = `${orgName}_bylaws.html`;
 
     this.downloadFile(fileName, standaloneHtml, 'text/html');
+    return true;
   }
 
   /* -----------------------------------------------------------------
@@ -179,7 +180,10 @@ class ExportManager {
    * Invokes native window.print() dialog.
    */
   printDocument() {
-    window.print();
+    if (window.print) {
+      window.print();
+    }
+    return true;
   }
 
   /* -----------------------------------------------------------------
