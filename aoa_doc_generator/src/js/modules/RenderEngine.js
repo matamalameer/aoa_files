@@ -88,7 +88,7 @@ class RenderEngine {
       (sec.articles || []).forEach((art, aIdx) => {
         itemsHtml += `
           <li class="toc-article-item">
-            <span class="toc-title">مادة (${aIdx + 1}): ${this.escapeHtml(art.title)}</span>
+            <span class="toc-title">${this.escapeHtml(art.title)}</span>
             <span class="toc-dots"></span>
           </li>
         `;
@@ -121,7 +121,7 @@ class RenderEngine {
         <h3 class="doc-chapter-title">الفصل ${sIdx + 1}: ${this.escapeHtml(sec.title)}</h3>
         ${(sec.articles || []).map((art, aIdx) => `
           <article class="doc-article" id="article-${art.id}">
-            <h4 class="doc-article-title">مادة (${aIdx + 1}): ${this.escapeHtml(art.title)}</h4>
+            <h4 class="doc-article-title">${this.escapeHtml(art.title)}</h4>
             <div class="doc-article-body">${art.content || ''}</div>
           </article>
         `).join('')}
@@ -160,7 +160,7 @@ class RenderEngine {
         <div class="tree-articles-list pr-3 border-r-2 border-slate-600 flex flex-col gap-1">
           ${(sec.articles || []).map((art, aIdx) => `
             <div class="flex items-center justify-between text-xs text-slate-300 py-1 hover:bg-slate-700/50 px-1 rounded">
-              <span class="truncate max-w-[150px]">مادة (${aIdx + 1}): ${this.escapeHtml(art.title)}</span>
+              <span class="truncate max-w-[150px]">${this.escapeHtml(art.title)}</span>
               <div class="flex items-center gap-1">
                 <button data-action="move-article-up" data-section-id="${sec.id}" data-article-id="${art.id}" class="btn-xs"><i class="fa-solid fa-arrow-up"></i></button>
                 <button data-action="move-article-down" data-section-id="${sec.id}" data-article-id="${art.id}" class="btn-xs"><i class="fa-solid fa-arrow-down"></i></button>

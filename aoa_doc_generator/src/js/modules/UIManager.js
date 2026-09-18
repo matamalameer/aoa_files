@@ -336,8 +336,6 @@ class UIManager {
         const sectionId = document.getElementById('modal-section-id').value;
         const title = document.getElementById('modal-section-title').value.trim();
 
-        if (!title) return;
-
         if (sectionId) {
           stateManager.updateSection(sectionId, title);
         } else {
@@ -358,7 +356,7 @@ class UIManager {
         const title = document.getElementById('modal-article-title').value.trim();
         const content = document.getElementById('modal-article-content').value.trim();
 
-        if (!title || !sectionId) return;
+        if (!sectionId) return;
 
         if (articleId) {
           stateManager.updateArticle(sectionId, articleId, title, content);

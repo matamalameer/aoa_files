@@ -172,7 +172,7 @@ class RenderManager {
       sec.articles.forEach(art => {
         tocItemsHtml += `
           <li class="toc-article-item">
-            <span class="toc-title">مادة (${this.toModernDigits(art.number)}): ${this.escapeHtml(this.toModernDigits(art.title))}</span>
+            <span class="toc-title">${this.escapeHtml(this.toModernDigits(art.title))}</span>
             <span class="toc-dots"></span>
           </li>
         `;
@@ -195,7 +195,7 @@ class RenderManager {
       section.articles.forEach((article) => {
         articlesHtml += `
           <article class="doc-article" id="doc-art-${article.id}">
-            <h4 class="doc-article-title">المادة (${this.toModernDigits(article.number)}): ${this.escapeHtml(this.toModernDigits(article.title))}</h4>
+            <h4 class="doc-article-title">${this.escapeHtml(this.toModernDigits(article.title))}</h4>
             <div class="doc-article-body">
               ${this.normalizeHtmlDigits(article.content || '<p class="placeholder-text">نص المادة فارغ...</p>')}
             </div>
@@ -265,7 +265,7 @@ class RenderManager {
             <div class="tree-article-header">
               <i class="fa-solid fa-file-lines article-icon"></i>
               <span class="tree-article-title" data-action="select-article" data-art-id="${art.id}">
-                   مادة (${this.toModernDigits(art.number)}): ${this.escapeHtml(this.toModernDigits(art.title))}
+                   ${this.escapeHtml(this.toModernDigits(art.title))}
               </span>
               <div class="tree-item-actions">
                 <button class="btn-tree-action" data-action="move-art-up" data-art-id="${art.id}" ${isFirstArt ? 'disabled' : ''} title="تحريك لأعلى">

@@ -19,15 +19,13 @@ const DEFAULT_INITIAL_STATE = {
       articles: [
         {
           id: "art_1",
-          number: 1,
           title: "المسمى والتأسيس",
-          content: "<p><strong>المادة (1):</strong> تعتبر هذه اللائحة هي المنظمة لكافة أعمال الحسينية/المأتم وإدارته، وتجري أحكامها على جميع الأعضاء والمنتسبين.</p>"
+          content: "<p>تعتبر هذه اللائحة هي المنظمة لكافة أعمال الحسينية/المأتم وإدارته، وتجري أحكامها على جميع الأعضاء والمنتسبين.</p>"
         },
         {
           id: "art_2",
-          number: 2,
           title: "أهداف المؤسسة",
-          content: "<p><strong>المادة (2):</strong> يهدف المأتم إلى إحياء الشعائر الدينية، وإقامة المجالس الحسينية، وخدمة المجتمع بتقديم البرامج الثقافية والاجتماعية.</p>"
+          content: "<p>يهدف المأتم إلى إحياء الشعائر الدينية، وإقامة المجالس الحسينية، وخدمة المجتمع بتقديم البرامج الثقافية والاجتماعية.</p>"
         }
       ]
     },
@@ -37,9 +35,8 @@ const DEFAULT_INITIAL_STATE = {
       articles: [
         {
           id: "art_3",
-          number: 3,
           title: "تشكيل مجلس الإدارة",
-          content: "<p><strong>المادة (3):</strong> يتولى إدارة المأتم مجلس إدارة منتخب ومكون من الأعضاء المشهود لهم بالكفاءة والأمانة وفق الشروط المحددة.</p>"
+          content: "<p>يتولى إدارة المأتم مجلس إدارة منتخب ومكون من الأعضاء المشهود لهم بالكفاءة والأمانة وفق الشروط المحددة.</p>"
         }
       ]
     }
@@ -92,7 +89,6 @@ class StateManager {
       throw new Error("Invalid state payload");
     }
     this.state = JSON.parse(JSON.stringify(newState));
-    this.recalculateArticleNumbers();
     this.notify('STATE_LOADED');
   }
 
@@ -148,7 +144,7 @@ class StateManager {
 
   updateSection(sectionId, title) {
     const section = this.getSectionById(sectionId);
-    if (section && title && title.trim()) {
+    if (section && typeof title === 'string') {
       section.title = title.trim();
       this.notify('SECTION_UPDATED', { sectionId, title: section.title });
     }
@@ -172,7 +168,6 @@ class StateManager {
     const index = this.state.sections.findIndex(s => s.id === sectionId);
     if (index !== -1) {
       const [deletedSection] = this.state.sections.splice(index, 1);
-      this.recalculateArticleNumbers();
       this.notify('SECTION_DELETED', { sectionId, deletedSection });
     }
   }
@@ -187,13 +182,11 @@ class StateManager {
 
     const newArticle = {
       id: `art_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-      number: 0, // Recalculated sequentially
       title,
       content: content || `<p>نص المادة...</p>`
     };
 
     section.articles.push(newArticle);
-    this.recalculateArticleNumbers();
     this.notify('ARTICLE_ADDED', { sectionId, article: newArticle });
     return newArticle;
   }
@@ -221,7 +214,7 @@ class StateManager {
     const article = section.articles.find(item => item.id === articleId);
     if (!article) return;
 
-    if (title && title.trim()) article.title = title.trim();
+    if (typeof title === 'string') article.title = title.trim();
     if (typeof content === 'string') article.content = content;
     this.notify('ARTICLE_UPDATED', { sectionId, articleId, title: article.title, content: article.content });
   }
@@ -240,7 +233,6 @@ class StateManager {
       section.articles[targetIndex],
       section.articles[index]
     ];
-    this.recalculateArticleNumbers();
     this.notify('ARTICLE_REORDERED', { sectionId, articleId, direction });
   }
 
@@ -249,7 +241,6 @@ class StateManager {
       const artIndex = section.articles.findIndex(a => a.id === articleId);
       if (artIndex !== -1) {
         const [deletedArticle] = section.articles.splice(artIndex, 1);
-        this.recalculateArticleNumbers();
         this.notify('ARTICLE_DELETED', { articleId, deletedArticle });
         return;
       }
@@ -272,17 +263,6 @@ class StateManager {
     return null;
   }
 
-  /**
-   * Guarantees sequential article numbering across all chapters (e.g. 1, 2, 3...)
-   */
-  recalculateArticleNumbers() {
-    let counter = 1;
-    this.state.sections.forEach(section => {
-      section.articles.forEach(article => {
-        article.number = counter++;
-      });
-    });
-  }
 }
 
 // Singleton Export
